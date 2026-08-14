@@ -1,0 +1,41 @@
+.appShell {
+  width: 100%;
+  min-height: 100dvh;
+
+  background: #f7f7f7;
+}
+
+.mainArea {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100dvh;
+  margin-left: 260px;
+}
+
+.content {
+  flex: 1;
+
+  width: 100%;
+  padding: 28px;
+
+  overflow-x: hidden;
+}
+
+/* Tablet */
+@media (max-width: 1023px) {
+  .mainArea {
+    margin-left: 0;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .content {
+    padding: 16px;
+  }
+}
