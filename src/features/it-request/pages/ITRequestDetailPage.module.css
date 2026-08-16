@@ -1,0 +1,308 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 5px 0;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  color: #9b6b0e;
+  background: transparent;
+
+  border: 0;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-top: 20px;
+  margin-bottom: 28px;
+}
+
+.requestNumber {
+  margin: 0 0 5px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #b77b0c;
+}
+
+.pageTitle {
+  margin: 0;
+
+  font-size: 27px;
+  font-weight: 700;
+
+  color: #333333;
+}
+
+.pageDescription {
+  margin: 6px 0 0;
+
+  font-size: 13px;
+
+  color: #888888;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 100px;
+  min-height: 30px;
+
+  padding: 5px 14px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  border-radius: 999px;
+
+  background: #f3f0e9;
+}
+
+.statusBadge[data-variant='submitted'] {
+  color: #b17b16;
+  background: #fff0ce;
+}
+
+.statusBadge[data-variant='approved'] {
+  color: #16845d;
+  background: #e5f5ee;
+}
+
+.statusBadge[data-variant='inProgress'] {
+  color: #c35d00;
+  background: #fff0db;
+}
+
+.statusBadge[data-variant='completed'] {
+  color: #555555;
+  background: #e9edf4;
+}
+
+.statusBadge[data-variant='rejected'] {
+  color: #ad3e3e;
+  background: #fbe8e8;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    320px;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.card {
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5dfd3;
+  border-radius: 14px;
+
+  margin-bottom: 20px;
+}
+
+.cardTitle {
+  margin: 0 0 22px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  color: #3d3d3d;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 24px;
+}
+
+.infoItem,
+.infoList > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.infoList {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.infoLabel {
+  font-size: 11px;
+
+  color: #888888;
+}
+
+.infoItem strong,
+.infoList strong {
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #444444;
+}
+
+.descriptionSection {
+  margin-top: 26px;
+}
+
+.descriptionSection p {
+  margin: 8px 0 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #555555;
+}
+
+.attachmentList {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.attachmentItem {
+  padding: 12px 14px;
+
+  font-size: 12px;
+
+  background: #faf8f3;
+
+  border: 1px solid #e8e2d7;
+  border-radius: 8px;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+}
+
+.historyItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid #eee8de;
+}
+
+.historyItem:last-child {
+  border-bottom: 0;
+}
+
+.historyItem strong {
+  font-size: 13px;
+
+  color: #444444;
+}
+
+.historyItem p {
+  margin: 4px 0 0;
+
+  font-size: 11px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+.historyItem > span {
+  flex-shrink: 0;
+
+  font-size: 11px;
+
+  color: #999999;
+}
+
+.emptyText {
+  margin: 0;
+
+  font-size: 12px;
+
+  color: #999999;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  min-height: 400px;
+
+  text-align: center;
+
+  color: #777777;
+}
+
+.retryButton {
+  margin-top: 14px;
+
+  padding: 9px 16px;
+
+  color: #ffffff;
+  background: #bd8b24;
+
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 1023px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .pageTitle {
+    font-size: 23px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 18px 16px;
+  }
+
+  .historyItem {
+    flex-direction: column;
+
+    gap: 8px;
+  }
+}

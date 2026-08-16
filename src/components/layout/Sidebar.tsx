@@ -1,13 +1,7 @@
-import {
-  BarChart3,
-  BriefcaseBusiness,
-  ClipboardCheck,
-  CreditCard,
-  LayoutDashboard,
-  Settings,
-  Users,
-} from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+
+import { useAuthStore } from '../../features/auth/store/auth.store';
+import { hasRole } from '../../features/auth/utils/auth-role';
 
 import styles from './Sidebar.module.css';
 
@@ -16,41 +10,37 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-const menuItems = [
+interface MenuItem {
+  label: string;
+  path: string;
+  code: string;
+}
+
+const baseMenuItems: MenuItem[] = [
   {
     label: 'Dashboard',
     path: '/dashboard',
-    icon: LayoutDashboard,
+    code: 'DB',
   },
   {
     label: 'IT Request',
     path: '/it-request',
-    icon: ClipboardCheck,
+    code: 'IT',
   },
   {
     label: 'HR Services',
     path: '/hr-services',
-    icon: Users,
+    code: 'HR',
   },
   {
     label: 'Payment',
     path: '/payment',
-    icon: CreditCard,
-  },
-  {
-    label: 'Approval',
-    path: '/approval',
-    icon: BriefcaseBusiness,
+    code: 'FN',
   },
   {
     label: 'Reports',
     path: '/reports',
-    icon: BarChart3,
-  },
-  {
-    label: 'Administration',
-    path: '/administration',
-    icon: Settings,
+    code: 'RP',
   },
 ];
 
@@ -58,6 +48,34 @@ function Sidebar({
   isOpen = false,
   onClose,
 }: SidebarProps) {
+  const user = useAuthStore(
+    (state) => state.user,
+  );
+
+  const menuItems: MenuItem[] = [
+    ...baseMenuItems,
+
+    ...(hasRole(user, 'APPROVER')
+      ? [
+          {
+            label: 'Approval',
+            path: '/approval',
+            code: 'AP',
+          },
+        ]
+      : []),
+
+    ...(hasRole(user, 'ADMIN')
+      ? [
+          {
+            label: 'Administration',
+            path: '/administration',
+            code: 'AD',
+          },
+        ]
+      : []),
+  ];
+
   return (
     <>
       {isOpen && (
@@ -71,47 +89,59 @@ function Sidebar({
 
       <aside
         className={`${styles.sidebar} ${
-          isOpen ? styles.sidebarOpen : ''
+          isOpen
+            ? styles.sidebarOpen
+            : ''
         }`}
       >
         <div className={styles.brand}>
-          <div className={styles.logo}>M</div>
+          <div className={styles.brandName}>
+            MAHADA
+          </div>
 
-          <div>
-            <div className={styles.brandName}>
-              Mahada
-            </div>
-            <div className={styles.brandDescription}>
-              Internal Application
-            </div>
+          <div
+            className={
+              styles.brandDescription
+            }
+          >
+            INTERNAL APP
           </div>
         </div>
 
-        <nav className={styles.navigation}>
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `${styles.menuItem} ${
-                    isActive ? styles.menuItemActive : ''
-                  }`
+        <nav
+          className={styles.navigation}
+          aria-label="Main navigation"
+        >
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `${styles.menuItem} ${
+                  isActive
+                    ? styles.menuItemActive
+                    : ''
+                }`
+              }
+            >
+              <span
+                className={
+                  styles.menuCode
                 }
               >
-                <Icon
-                  className={styles.menuIcon}
-                  size={20}
-                  strokeWidth={1.8}
-                />
+                {item.code}
+              </span>
 
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          })}
+              <span
+                className={
+                  styles.menuLabel
+                }
+              >
+                {item.label}
+              </span>
+            </NavLink>
+          ))}
         </nav>
       </aside>
     </>

@@ -1,0 +1,232 @@
+.tableWrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 920px;
+
+  border-spacing: 0;
+  border-collapse: separate;
+
+  font-size: 12px;
+}
+
+/* =========================
+   TABLE HEADER
+   ========================= */
+
+.table thead {
+  background: #f3f0e9;
+}
+
+.table th {
+  padding: 14px 20px;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  text-align: left;
+
+  color: #777777;
+
+  white-space: nowrap;
+}
+
+.table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.table th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+/* =========================
+   TABLE BODY
+   ========================= */
+
+.table td {
+  padding: 17px 20px;
+
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  color: #555555;
+
+  border-bottom: 1px solid #e7e2d8;
+}
+
+.table tbody tr {
+  transition:
+    background-color 0.2s ease;
+}
+
+.table tbody tr:hover td {
+  background: #faf8f3;
+}
+
+/* =========================
+   REQUEST
+   ========================= */
+
+.requestNumber {
+  font-weight: 600;
+
+  color: #b77b0c;
+
+  white-space: nowrap;
+}
+
+.requestTitle {
+  display: block;
+
+  min-width: 190px;
+  max-width: 280px;
+
+  overflow: hidden;
+
+  color: #555555;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.requestDate {
+  white-space: nowrap;
+}
+
+/* =========================
+   STATUS
+   ========================= */
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 100px;
+  min-height: 28px;
+
+  padding: 4px 12px;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+
+  border-radius: 999px;
+
+  white-space: nowrap;
+}
+
+/* Diajukan */
+
+.submitted {
+  color: #b17b16;
+  background: #fff0ce;
+}
+
+/* Disetujui */
+
+.approved {
+  color: #16845d;
+  background: #e5f5ee;
+}
+
+/* Diproses */
+
+.inProgress {
+  color: #c35d00;
+  background: #fff0db;
+}
+
+/* Selesai */
+
+.completed {
+  color: #555555;
+  background: #e9edf4;
+}
+
+/* Ditolak */
+
+.rejected {
+  color: #ad3e3e;
+  background: #fbe8e8;
+}
+
+/* =========================
+   ACTION
+   ========================= */
+
+.actionColumn {
+  width: 100px;
+
+  text-align: center !important;
+}
+
+.detailButton {
+  padding: 5px 8px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  color: #b67b0d;
+  background: transparent;
+
+  border: 0;
+  border-radius: 6px;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.detailButton:hover {
+  color: #8e5d04;
+  background: #faf0dc;
+}
+
+/* =========================
+   EMPTY
+   ========================= */
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 180px;
+
+  padding: 24px;
+
+  font-size: 13px;
+  text-align: center;
+
+  color: #999999;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e2d8;
+  border-radius: 12px;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 767px) {
+  .table th,
+  .table td {
+    padding: 14px 16px;
+  }
+
+  .requestTitle {
+    min-width: 180px;
+  }
+}

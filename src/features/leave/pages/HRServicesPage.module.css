@@ -1,0 +1,227 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 38px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.03fr);
+  gap: 30px;
+}
+
+.leaveCard,
+.businessTripCard {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 190px;
+  padding: 31px 30px;
+  border-radius: 18px;
+}
+
+.leaveCard {
+  color: #ffffff;
+  background: #373737;
+}
+
+.businessTripCard {
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+}
+
+.leaveContent,
+.tripContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.leaveLabel,
+.tripLabel {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.leaveLabel {
+  color: #e4e4e4;
+}
+
+.tripLabel {
+  color: #777777;
+}
+
+.leaveValue,
+.tripValue {
+  display: block;
+  margin-top: 21px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.leaveValue {
+  font-size: 42px;
+  color: #ffffff;
+}
+
+.tripValue {
+  font-size: 31px;
+  color: #333333;
+}
+
+.leaveDescription,
+.tripDescription {
+  margin: 17px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.leaveDescription {
+  color: #d3a83e;
+}
+
+.tripDescription {
+  color: #c45200;
+}
+
+.primaryButton,
+.secondaryButton {
+  flex-shrink: 0;
+  min-height: 45px;
+  padding: 0 30px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.primaryButton {
+  min-width: 140px;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+}
+
+.primaryButton:hover {
+  background: #a87819;
+  border-color: #a87819;
+}
+
+.secondaryButton {
+  min-width: 166px;
+  color: #555555;
+  background: #ffffff;
+  border: 1px solid #d8d0c3;
+}
+
+.secondaryButton:hover {
+  background: #faf8f3;
+  border-color: #c9bead;
+}
+
+.historySection {
+  margin-top: 51px;
+}
+
+.historySection h2 {
+  margin: 0 0 18px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #3e3e3e;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 400px;
+  font-size: 13px;
+  text-align: center;
+  color: #777777;
+}
+
+.retryButton {
+  margin-top: 14px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 1100px) {
+  .summaryGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .leaveCard,
+  .businessTripCard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    margin-bottom: 26px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .leaveCard,
+  .businessTripCard {
+    min-height: auto;
+    padding: 24px 22px;
+  }
+
+  .leaveValue {
+    font-size: 36px;
+  }
+
+  .tripValue {
+    font-size: 28px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .historySection {
+    margin-top: 35px;
+  }
+}

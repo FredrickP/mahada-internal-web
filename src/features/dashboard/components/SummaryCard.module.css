@@ -1,0 +1,106 @@
+.card {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 142px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #ead7a9;
+  border-radius: 14px;
+
+  box-shadow:
+    0 5px 14px rgba(0, 0, 0, 0.08);
+}
+
+.mainContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.iconBox {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  background: #c29127;
+
+  border-radius: 11px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  color: #666666;
+}
+
+.value {
+  margin-top: 5px;
+
+  font-size: 29px;
+  font-weight: 700;
+  line-height: 1;
+
+  color: #333333;
+}
+
+.description {
+  margin-top: auto;
+  padding-top: 22px;
+
+  font-size: 11px;
+  line-height: 1.4;
+
+  color: #b1780b;
+}
+
+.waitingApproval .iconBox {
+  background: #df7900;
+}
+
+.waitingApproval .description {
+  color: #d56d00;
+}
+
+.inProgress .iconBox {
+  background: #bf8b23;
+}
+
+.completed {
+  border-color: #b9decf;
+}
+
+.completed .iconBox {
+  background: #148c5d;
+}
+
+.completed .description {
+  color: #148c5d;
+}
+
+@media (max-width: 767px) {
+  .card {
+    min-height: 126px;
+
+    padding: 18px;
+  }
+
+  .description {
+    padding-top: 18px;
+  }
+}

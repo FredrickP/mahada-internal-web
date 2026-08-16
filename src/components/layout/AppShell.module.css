@@ -2,7 +2,7 @@
   width: 100%;
   min-height: 100dvh;
 
-  background: #f7f7f7;
+  background: #faf9f6;
 }
 
 .mainArea {
@@ -10,32 +10,32 @@
   flex-direction: column;
 
   min-height: 100dvh;
-  margin-left: 260px;
+
+  margin-left: 245px;
 }
 
 .content {
   flex: 1;
 
   width: 100%;
-  padding: 28px;
+
+  padding: 30px 32px 40px;
 
   overflow-x: hidden;
 }
 
-/* Tablet */
 @media (max-width: 1023px) {
   .mainArea {
     margin-left: 0;
   }
 
   .content {
-    padding: 20px;
+    padding: 24px 20px 32px;
   }
 }
 
-/* Mobile */
 @media (max-width: 767px) {
   .content {
-    padding: 16px;
+    padding: 20px 16px 28px;
   }
 }
