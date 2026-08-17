@@ -1,15 +1,27 @@
-import { useMemo } from 'react';
+import {
+  useMemo,
+} from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  zodResolver,
+} from '@hookform/resolvers/zod';
+
 import {
   Controller,
   useForm,
 } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  useNavigate,
+} from 'react-router-dom';
 
-import { useCreateBusinessTrip } from '../hooks/useCreateBusinessTrip';
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
+
+import {
+  useCreateBusinessTrip,
+} from '../hooks/useCreateBusinessTrip';
 
 import {
   createBusinessTripSchema,
@@ -27,29 +39,26 @@ import {
 import styles from './BusinessTripPage.module.css';
 
 function BusinessTripPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const {
     createMutation,
-    saveDraftMutation,
   } = useCreateBusinessTrip();
-
-  const approverName =
-    'Operation Head';
 
   const {
     register,
     control,
     handleSubmit,
-    getValues,
     watch,
     formState: {
       errors,
     },
   } = useForm<CreateBusinessTripFormValues>({
-    resolver: zodResolver(
-      createBusinessTripSchema,
-    ),
+    resolver:
+      zodResolver(
+        createBusinessTripSchema,
+      ),
     defaultValues: {
       destinationCity: '',
       departureDate: '',
@@ -62,10 +71,14 @@ function BusinessTripPage() {
   });
 
   const departureDate =
-    watch('departureDate');
+    watch(
+      'departureDate',
+    );
 
   const returnDate =
-    watch('returnDate');
+    watch(
+      'returnDate',
+    );
 
   const transportationEstimate =
     watch(
@@ -107,76 +120,26 @@ function BusinessTripPage() {
     ]);
 
   const isProcessing =
-    createMutation.isPending ||
-    saveDraftMutation.isPending;
+    createMutation.isPending;
 
   const mutationError =
-    createMutation.error ??
-    saveDraftMutation.error;
-
-  const handleSaveDraft = () => {
-    const values =
-      getValues();
-
-    saveDraftMutation.mutate(
-      {
-        destinationCity:
-          values.destinationCity ||
-          undefined,
-        departureDate:
-          values.departureDate ||
-          undefined,
-        returnDate:
-          values.returnDate ||
-          undefined,
-        durationDays:
-          durationDays > 0
-            ? durationDays
-            : undefined,
-        transportationEstimate:
-          values.transportationEstimate,
-        accommodationEstimate:
-          values.accommodationEstimate,
-        otherEstimate:
-          values.otherEstimate,
-        totalEstimate,
-        purpose:
-          values.purpose ||
-          undefined,
-        approverName,
-      },
-      {
-        onSuccess: () => {
-          navigate(
-            '/hr-services',
-          );
-        },
-      },
-    );
-  };
+    createMutation.error;
 
   const handleSubmitTrip = (
     values: CreateBusinessTripFormValues,
   ) => {
     createMutation.mutate(
       {
-        destinationCity:
+        destination:
           values.destinationCity,
-        departureDate:
-          values.departureDate,
-        returnDate:
-          values.returnDate,
-        durationDays,
-        transportationEstimate:
-          values.transportationEstimate,
-        accommodationEstimate:
-          values.accommodationEstimate,
-        otherEstimate:
-          values.otherEstimate,
-        totalEstimate,
         purpose:
           values.purpose,
-        approverName,
+        startDate:
+          values.departureDate,
+        endDate:
+          values.returnDate,
+        estimatedCost:
+          totalEstimate,
       },
       {
         onSuccess: () => {
@@ -375,7 +338,9 @@ function BusinessTripPage() {
               <Controller
                 name="transportationEstimate"
                 control={control}
-                render={({ field }) => (
+                render={({
+                  field,
+                }) => (
                   <input
                     id="transportationEstimate"
                     type="text"
@@ -399,9 +364,7 @@ function BusinessTripPage() {
                     ) => {
                       field.onChange(
                         parseRupiahInput(
-                          event
-                            .target
-                            .value,
+                          event.target.value,
                         ),
                       );
                     }}
@@ -438,7 +401,9 @@ function BusinessTripPage() {
               <Controller
                 name="accommodationEstimate"
                 control={control}
-                render={({ field }) => (
+                render={({
+                  field,
+                }) => (
                   <input
                     id="accommodationEstimate"
                     type="text"
@@ -462,9 +427,7 @@ function BusinessTripPage() {
                     ) => {
                       field.onChange(
                         parseRupiahInput(
-                          event
-                            .target
-                            .value,
+                          event.target.value,
                         ),
                       );
                     }}
@@ -501,7 +464,9 @@ function BusinessTripPage() {
               <Controller
                 name="otherEstimate"
                 control={control}
-                render={({ field }) => (
+                render={({
+                  field,
+                }) => (
                   <input
                     id="otherEstimate"
                     type="text"
@@ -525,9 +490,7 @@ function BusinessTripPage() {
                     ) => {
                       field.onChange(
                         parseRupiahInput(
-                          event
-                            .target
-                            .value,
+                          event.target.value,
                         ),
                       );
                     }}
@@ -634,23 +597,6 @@ function BusinessTripPage() {
             }
           >
             <button
-              type="button"
-              className={
-                styles.draftButton
-              }
-              disabled={
-                isProcessing
-              }
-              onClick={
-                handleSaveDraft
-              }
-            >
-              {saveDraftMutation.isPending
-                ? 'Menyimpan...'
-                : 'Simpan Draft'}
-            </button>
-
-            <button
               type="submit"
               className={
                 styles.submitButton
@@ -676,10 +622,9 @@ function BusinessTripPage() {
           </h3>
 
           <p>
-            Unggah bukti pembayaran
-            dan dokumen perjalanan
-            pada halaman detail
-            pengajuan.
+            Unggah bukti dan dokumen
+            perjalanan pada halaman
+            detail pengajuan.
           </p>
         </aside>
       </div>
