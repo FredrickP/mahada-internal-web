@@ -1,6 +1,10 @@
 import { apiClient } from '../../../lib/api/api-client';
 
 import {
+  registerMockApproval,
+} from '../../approval/mocks/approval.mock';
+
+import {
   createMockITRequest,
   getMockITRequestDetail,
   getMockITRequests,
@@ -18,6 +22,34 @@ import type {
 const useMock =
   import.meta.env.VITE_USE_MOCK === 'true';
 
+const formatRequestType = (
+  type: CreateITRequestInput['type'],
+): string => {
+  if (type === 'REQUEST') {
+    return 'Request';
+  }
+
+  if (type === 'CHANGE') {
+    return 'Change';
+  }
+
+  return 'Incident';
+};
+
+const formatPriority = (
+  priority: CreateITRequestInput['priority'],
+): string => {
+  const normalizedPriority =
+    priority.toLowerCase();
+
+  return (
+    normalizedPriority
+      .charAt(0)
+      .toUpperCase() +
+    normalizedPriority.slice(1)
+  );
+};
+
 /**
  * Get list IT Request.
  */
@@ -26,7 +58,9 @@ export const getITRequests = async (
 ): Promise<ITRequestListResponse> => {
   if (useMock) {
     const data =
-      await getMockITRequests(filter);
+      await getMockITRequests(
+        filter,
+      );
 
     return {
       data,
@@ -42,11 +76,9 @@ export const getITRequests = async (
           search:
             filter.search.trim() ||
             undefined,
-
           type:
             filter.type ||
             undefined,
-
           status:
             filter.status ||
             undefined,
@@ -83,18 +115,69 @@ const appendAttachments = (
  *
  * INCIDENT:
  * - tidak membutuhkan approval.
- *
- * Validasi final tetap harus dilakukan
- * kembali oleh backend.
  */
 export const createITRequest = async (
   input: CreateITRequestInput,
 ): Promise<CreateITRequestResponse> => {
   if (useMock) {
-    return createMockITRequest(
-      input,
-      false,
-    );
+    const response =
+      await createMockITRequest(
+        input,
+        false,
+      );
+
+    const needApproval =
+      input.type === 'REQUEST' ||
+      input.type === 'CHANGE';
+
+    if (needApproval) {
+      await registerMockApproval({
+        submissionNumber:
+          response.requestNumber,
+        module:
+          'IT_REQUEST',
+        title:
+          input.title.trim(),
+        requesterName:
+          'Fredrick Pardosi',
+        requesterDivision:
+          'Operation',
+        data: {
+          requestType:
+            formatRequestType(
+              input.type,
+            ),
+          priority:
+            formatPriority(
+              input.priority,
+            ),
+          description:
+            input.description.trim(),
+          destinationDivision:
+            'Information Technology',
+        },
+        attachments:
+          input.attachments.map(
+            (
+              attachment,
+              index,
+            ) => {
+              return {
+                id:
+                  `ATT-IT-${Date.now()}-${index}`,
+                fileName:
+                  attachment.name,
+                fileUrl:
+                  URL.createObjectURL(
+                    attachment,
+                  ),
+              };
+            },
+          ),
+      });
+    }
+
+    return response;
   }
 
   const formData =
@@ -142,8 +225,7 @@ export const createITRequest = async (
 /**
  * Save IT Request sebagai draft.
  *
- * Draft boleh belum lengkap sehingga
- * field selain attachments bersifat optional.
+ * Draft tidak masuk Approval Queue.
  */
 export const saveITRequestDraft = async (
   input: SaveITRequestDraftInput,
