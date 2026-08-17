@@ -1,0 +1,283 @@
+.page {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 34px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.configurationSection {
+  margin-top: 28px;
+}
+
+.sectionHeader {
+  margin-bottom: 18px;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #414141;
+}
+
+.sectionHeader p {
+  margin: 5px 0 0;
+  font-size: 11px;
+  color: #909090;
+}
+
+.taxList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.taxCard {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 21px 22px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 14px;
+}
+
+.taxIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  color: #946a18;
+  background: #f7edda;
+  border-radius: 10px;
+}
+
+.taxInformation {
+  min-width: 0;
+}
+
+.taxTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.taxTitle h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444444;
+}
+
+.taxTitle span {
+  padding: 5px 9px;
+  font-size: 9px;
+  font-weight: 600;
+  color: #a24242;
+  background: #fbe8e8;
+  border-radius: 999px;
+}
+
+.taxTitle span[data-active='true'] {
+  color: #247253;
+  background: #e5f5ee;
+}
+
+.taxInformation p {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #8e8e8e;
+}
+
+.taxValue {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.taxValue strong {
+  min-width: 55px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: right;
+  color: #444444;
+}
+
+.taxValue button {
+  padding: 4px 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #a8730e;
+  background: transparent;
+  border: 0;
+}
+
+.editArea {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rateInput {
+  position: relative;
+  width: 100px;
+}
+
+.rateInput input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 28px 0 10px;
+  font-family: inherit;
+  font-size: 11px;
+  color: #555555;
+  background: #ffffff;
+  border: 1px solid #d8d1c5;
+  border-radius: 8px;
+  outline: none;
+}
+
+.rateInput input:focus {
+  border-color: #bd8b22;
+}
+
+.rateInput span {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  font-size: 10px;
+  color: #888888;
+  transform: translateY(-50%);
+}
+
+.statusToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #666666;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  gap: 7px;
+}
+
+.cancelButton,
+.saveButton {
+  min-height: 38px;
+  padding: 0 12px;
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 7px;
+}
+
+.cancelButton {
+  color: #5c5c5c;
+  background: #ffffff;
+  border: 1px solid #d7cfc2;
+}
+
+.saveButton {
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+}
+
+.cancelButton:disabled,
+.saveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.successMessage,
+.errorMessage {
+  margin-top: 16px;
+  padding: 11px 13px;
+  font-size: 10px;
+  border-radius: 8px;
+}
+
+.successMessage {
+  color: #247253;
+  background: #e6f5ee;
+  border: 1px solid #cde8dc;
+}
+
+.errorMessage {
+  color: #a03d3d;
+  background: #fceaea;
+  border: 1px solid #f0cece;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 400px;
+  font-size: 13px;
+  text-align: center;
+  color: #777777;
+}
+
+.retryButton {
+  margin-top: 14px;
+  padding: 9px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .taxCard {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  .taxValue,
+  .editArea {
+    grid-column: 2;
+  }
+
+  .editArea {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .cancelButton,
+  .saveButton {
+    flex: 1;
+  }
+}

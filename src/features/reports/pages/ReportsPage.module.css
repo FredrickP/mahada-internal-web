@@ -1,0 +1,480 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 34px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.filterCard {
+  padding: 22px 24px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 14px;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    auto;
+  gap: 18px;
+  align-items: end;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterGroup label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #525252;
+}
+
+.filterGroup input,
+.filterGroup select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 12px;
+  color: #505050;
+  background: #ffffff;
+  border: 1px solid #d9d2c5;
+  border-radius: 8px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.filterGroup input:focus,
+.filterGroup select:focus {
+  border-color: #bd8b22;
+  box-shadow: 0 0 0 3px rgba(189, 139, 34, 0.1);
+}
+
+.filterGroup select {
+  cursor: pointer;
+}
+
+.filterActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.showButton,
+.exportButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 17px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.showButton {
+  min-width: 95px;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+}
+
+.showButton:hover:not(:disabled) {
+  background: #a87819;
+  border-color: #a87819;
+}
+
+.exportButton {
+  gap: 7px;
+  min-width: 125px;
+  color: #78613a;
+  background: #ffffff;
+  border: 1px solid #d7cdbd;
+}
+
+.exportButton:hover:not(:disabled) {
+  background: #faf7f0;
+  border-color: #c7b99f;
+}
+
+.showButton:disabled,
+.exportButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.filterError {
+  margin: 12px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #b24848;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    minmax(0, 1fr)
+  );
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.summaryCard {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  min-height: 110px;
+  padding: 21px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 13px;
+  box-shadow: 0 3px 10px rgba(56, 46, 31, 0.03);
+}
+
+.summaryIndicator {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 11px;
+}
+
+.summaryIndicator[data-variant='total'] {
+  background: #b98520;
+}
+
+.summaryIndicator[data-variant='completed'] {
+  background: #25845f;
+}
+
+.summaryIndicator[data-variant='progress'] {
+  background: #d18a25;
+}
+
+.summaryIndicator[data-variant='rejected'] {
+  background: #ba5b55;
+}
+
+.summaryCard p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #7d7d7d;
+}
+
+.summaryCard strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1;
+  color: #3d3d3d;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.2fr)
+    minmax(0, 0.8fr);
+  gap: 22px;
+  margin-top: 30px;
+}
+
+.analyticsCard {
+  min-width: 0;
+  padding: 26px 27px 30px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 14px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cardHeader h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #414141;
+}
+
+.cardHeader p {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #929292;
+}
+
+.moduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.moduleItem {
+  width: 100%;
+}
+
+.moduleInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 9px;
+}
+
+.moduleInfo span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #5e5e5e;
+}
+
+.moduleInfo strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: #454545;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 7px;
+  overflow: hidden;
+  background: #f0ede7;
+  border-radius: 999px;
+}
+
+.moduleProgress {
+  height: 100%;
+  background: #bd8b22;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.statusList {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin-top: 30px;
+}
+
+.statusItem {
+  width: 100%;
+}
+
+.statusInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.statusLabel {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.statusLabel > span:last-child {
+  font-size: 12px;
+  font-weight: 500;
+  color: #5e5e5e;
+}
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.statusDot[data-variant='completed'] {
+  background: #25845f;
+}
+
+.statusDot[data-variant='progress'] {
+  background: #cf8b28;
+}
+
+.statusDot[data-variant='rejected'] {
+  background: #ba5b55;
+}
+
+.statusInfo strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: #454545;
+}
+
+.statusMeta {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    36px;
+  gap: 11px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.statusMeta > span {
+  font-size: 10px;
+  text-align: right;
+  color: #929292;
+}
+
+.statusProgress {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.statusProgress[data-variant='completed'] {
+  background: #25845f;
+}
+
+.statusProgress[data-variant='progress'] {
+  background: #cf8b28;
+}
+
+.statusProgress[data-variant='rejected'] {
+  background: #ba5b55;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 300px;
+  margin-top: 28px;
+  font-size: 12px;
+  text-align: center;
+  color: #777777;
+}
+
+.retryButton {
+  margin-top: 14px;
+  padding: 9px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 1150px) {
+  .filterGrid {
+    grid-template-columns: repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  }
+
+  .filterActions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .summaryGrid {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  }
+}
+
+@media (max-width: 900px) {
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    margin-bottom: 26px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .filterCard {
+    padding: 20px;
+  }
+
+  .filterGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterActions {
+    grid-column: auto;
+    flex-direction: column;
+  }
+
+  .showButton,
+  .exportButton {
+    width: 100%;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .summaryCard {
+    min-height: 96px;
+  }
+
+  .analyticsGrid {
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .analyticsCard {
+    padding: 22px 20px 25px;
+  }
+
+  .moduleList,
+  .statusList {
+    margin-top: 25px;
+  }
+}

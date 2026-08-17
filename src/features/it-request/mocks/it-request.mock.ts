@@ -52,52 +52,106 @@ let mockITRequests: ITRequest[] = [
   },
 ];
 
+let mockITRequestDetails: Record<
+  string,
+  Pick<
+    ITRequestDetail,
+    'attachments' | 'history'
+  >
+> = {
+  IT001: {
+    attachments: [
+      {
+        id: 'ATT001',
+        fileName: 'vpn-error.png',
+        fileUrl: '/mock/vpn-error.png',
+        fileSize: 245760,
+      },
+    ],
+    history: [
+      {
+        id: 'HIS001',
+        status: 'SUBMITTED',
+        actionBy: 'Fredrick Pardosi',
+        actionDate: '05 Agu 2026 09:15',
+        notes: 'Incident dilaporkan.',
+      },
+      {
+        id: 'HIS002',
+        status: 'IN_PROGRESS',
+        actionBy: 'Andi IT',
+        actionDate: '05 Agu 2026 09:30',
+        notes:
+          'Sedang dilakukan pengecekan akses VPN.',
+      },
+    ],
+  },
+};
+
 export const getMockITRequests = async (
   filter?: ITRequestFilter,
 ): Promise<ITRequest[]> => {
   await delay(500);
 
-  let result = [...mockITRequests];
+  let result = [
+    ...mockITRequests,
+  ];
 
   if (!filter) {
     return result;
   }
 
-  const search = filter.search
-    .trim()
-    .toLowerCase();
+  const search =
+    filter.search
+      .trim()
+      .toLowerCase();
 
   if (search) {
-    result = result.filter((request) => {
-      const requestNumber =
-        request.requestNumber.toLowerCase();
+    result =
+      result.filter(
+        (request) => {
+          const requestNumber =
+            request.requestNumber
+              .toLowerCase();
 
-      const title =
-        request.title.toLowerCase();
+          const title =
+            request.title
+              .toLowerCase();
 
-      return (
-        requestNumber.includes(search) ||
-        title.includes(search)
+          return (
+            requestNumber.includes(
+              search,
+            ) ||
+            title.includes(
+              search,
+            )
+          );
+        },
       );
-    });
   }
 
   if (filter.type) {
-    result = result.filter(
-      (request) => {
-        return request.type === filter.type;
-      },
-    );
+    result =
+      result.filter(
+        (request) => {
+          return (
+            request.type ===
+            filter.type
+          );
+        },
+      );
   }
 
   if (filter.status) {
-    result = result.filter(
-      (request) => {
-        return (
-          request.status === filter.status
-        );
-      },
-    );
+    result =
+      result.filter(
+        (request) => {
+          return (
+            request.status ===
+            filter.status
+          );
+        },
+      );
   }
 
   return result;
@@ -110,7 +164,11 @@ export const getMockITRequestDetail = async (
 
   const request =
     mockITRequests.find(
-      (item) => item.id === id,
+      (item) => {
+        return (
+          item.id === id
+        );
+      },
     );
 
   if (!request) {
@@ -119,70 +177,43 @@ export const getMockITRequestDetail = async (
     );
   }
 
+  const storedDetail =
+    mockITRequestDetails[
+      request.id
+    ];
+
+  const defaultHistory: ITRequestDetail['history'] = [
+    {
+      id:
+        `HIS-${request.id}`,
+      status:
+        request.status,
+      actionBy:
+        request.picName ??
+        'System',
+      actionDate:
+        request.submissionDate,
+    },
+  ];
+
   return {
     ...request,
-
     requesterName:
       'Fredrick Pardosi',
-
     requesterDivision:
       'Operation',
-
     requesterEmail:
       'fredrick@mahadafinance.co.id',
-
     attachments:
-      request.id === 'IT001'
-        ? [
-            {
-              id: 'ATT001',
-              fileName:
-                'vpn-error.png',
-              fileUrl:
-                '/mock/vpn-error.png',
-              fileSize: 245760,
-            },
-          ]
-        : [],
-
+      structuredClone(
+        storedDetail?.attachments ??
+          [],
+      ),
     history:
-      request.id === 'IT001'
-        ? [
-            {
-              id: 'HIS001',
-              status:
-                'SUBMITTED',
-              actionBy:
-                'Fredrick Pardosi',
-              actionDate:
-                '05 Agu 2026 09:15',
-              notes:
-                'Incident dilaporkan.',
-            },
-            {
-              id: 'HIS002',
-              status:
-                'IN_PROGRESS',
-              actionBy:
-                'Andi IT',
-              actionDate:
-                '05 Agu 2026 09:30',
-              notes:
-                'Sedang dilakukan pengecekan akses VPN.',
-            },
-          ]
-        : [
-            {
-              id: `HIS-${request.id}`,
-              status:
-                request.status,
-              actionBy:
-                request.picName ??
-                'System',
-              actionDate:
-                request.submissionDate,
-            },
-          ],
+      structuredClone(
+        storedDetail?.history ??
+          defaultHistory,
+      ),
   };
 };
 
@@ -198,11 +229,16 @@ const generateRequestNumber = (): string => {
             .split('-')
             .at(-1);
 
-        const sequence = Number(
-          sequenceText,
-        );
+        const sequence =
+          Number(
+            sequenceText,
+          );
 
-        if (Number.isNaN(sequence)) {
+        if (
+          Number.isNaN(
+            sequence,
+          )
+        ) {
           return highest;
         }
 
@@ -214,9 +250,13 @@ const generateRequestNumber = (): string => {
       0,
     );
 
-  const nextSequence = String(
-    highestSequence + 1,
-  ).padStart(4, '0');
+  const nextSequence =
+    String(
+      highestSequence + 1,
+    ).padStart(
+      4,
+      '0',
+    );
 
   return `IT-2026-${nextSequence}`;
 };
@@ -232,12 +272,9 @@ export const createMockITRequest = async (
   const requestNumber =
     generateRequestNumber();
 
-  const id = `IT${Date.now()}`;
+  const id =
+    `IT${Date.now()}`;
 
-  /*
-   * Draft boleh parsial.
-   * Belum masuk workflow.
-   */
   if (isDraft) {
     return {
       id,
@@ -247,25 +284,24 @@ export const createMockITRequest = async (
     };
   }
 
-  /*
-   * Kalau bukan draft, input pasti berasal
-   * dari CreateITRequestInput karena sebelumnya
-   * sudah melewati validasi form.
-   */
   const submittedInput =
     input as CreateITRequestInput;
 
   const status =
-    submittedInput.type === 'INCIDENT'
+    submittedInput.type ===
+    'INCIDENT'
       ? 'IN_PROGRESS'
       : 'SUBMITTED';
 
   const newRequest: ITRequest = {
     id,
     requestNumber,
-    title: submittedInput.title,
-    type: submittedInput.type,
-    submissionDate: '15 Agu 2026',
+    title:
+      submittedInput.title,
+    type:
+      submittedInput.type,
+    submissionDate:
+      '17 Agu 2026',
     status,
     description:
       submittedInput.description,
@@ -275,10 +311,75 @@ export const createMockITRequest = async (
       submittedInput.attachments.length,
   };
 
+  const attachments: ITRequestDetail['attachments'] =
+    submittedInput.attachments.map(
+      (
+        file,
+        index,
+      ) => {
+        return {
+          id:
+            `ATT-${id}-${index + 1}`,
+          fileName:
+            file.name,
+          fileUrl:
+            URL.createObjectURL(
+              file,
+            ),
+          fileSize:
+            file.size,
+        };
+      },
+    );
+
+  const history: ITRequestDetail['history'] = [
+    {
+      id:
+        `HIS-${id}-001`,
+      status:
+        'SUBMITTED',
+      actionBy:
+        'Fredrick Pardosi',
+      actionDate:
+        '17 Agu 2026 15:00',
+      notes:
+        submittedInput.type ===
+        'INCIDENT'
+          ? 'Incident dilaporkan.'
+          : 'IT Request diajukan.',
+    },
+  ];
+
+  if (
+    submittedInput.type ===
+    'INCIDENT'
+  ) {
+    history.push({
+      id:
+        `HIS-${id}-002`,
+      status:
+        'IN_PROGRESS',
+      actionBy:
+        'IT Team',
+      actionDate:
+        '17 Agu 2026 15:01',
+      notes:
+        'Incident langsung diteruskan ke proses IT tanpa approval.',
+    });
+  }
+
   mockITRequests = [
     newRequest,
     ...mockITRequests,
   ];
+
+  mockITRequestDetails = {
+    ...mockITRequestDetails,
+    [id]: {
+      attachments,
+      history,
+    },
+  };
 
   return {
     id,
@@ -286,4 +387,117 @@ export const createMockITRequest = async (
     status,
     isDraft: false,
   };
+};
+
+export const updateMockITRequestApprovalStatus = async (
+  reference: string,
+  status: Extract<
+    ITRequest['status'],
+    'APPROVED' | 'REJECTED'
+  >,
+): Promise<ITRequest> => {
+  await delay(400);
+
+  const requestIndex =
+    mockITRequests.findIndex(
+      (request) => {
+        return (
+          request.id === reference ||
+          request.requestNumber ===
+            reference
+        );
+      },
+    );
+
+  if (
+    requestIndex < 0
+  ) {
+    throw new Error(
+      'IT Request tidak ditemukan',
+    );
+  }
+
+  const request =
+    mockITRequests[
+      requestIndex
+    ];
+
+  if (
+    request.type ===
+    'INCIDENT'
+  ) {
+    throw new Error(
+      'Incident tidak memerlukan approval',
+    );
+  }
+
+  if (
+    request.status !==
+    'SUBMITTED'
+  ) {
+    throw new Error(
+      'IT Request sudah diproses',
+    );
+  }
+
+  const updatedRequest: ITRequest = {
+    ...request,
+    status,
+  };
+
+  mockITRequests[
+    requestIndex
+  ] = updatedRequest;
+
+  const existingDetail =
+    mockITRequestDetails[
+      request.id
+    ];
+
+  const existingHistory =
+    existingDetail?.history ??
+    [
+      {
+        id:
+          `HIS-${request.id}-001`,
+        status:
+          'SUBMITTED' as const,
+        actionBy:
+          'Fredrick Pardosi',
+        actionDate:
+          request.submissionDate,
+        notes:
+          'IT Request diajukan.',
+      },
+    ];
+
+  mockITRequestDetails = {
+    ...mockITRequestDetails,
+    [request.id]: {
+      attachments:
+        existingDetail?.attachments ??
+        [],
+      history: [
+        ...existingHistory,
+        {
+          id:
+            `HIS-${Date.now()}`,
+          status,
+          actionBy:
+            'Fredrick Pardosi',
+          actionDate:
+            '17 Agu 2026 15:20',
+          notes:
+            status ===
+            'APPROVED'
+              ? 'IT Request disetujui.'
+              : 'IT Request ditolak.',
+        },
+      ],
+    },
+  };
+
+  return structuredClone(
+    updatedRequest,
+  );
 };

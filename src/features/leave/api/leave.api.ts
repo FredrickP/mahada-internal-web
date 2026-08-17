@@ -3,11 +3,13 @@ import { apiClient } from '../../../lib/api/api-client';
 import {
   createMockLeaveRequest,
   getMockHRServices,
+  getMockLeaveDetail,
 } from '../mocks/leave.mock';
 
 import type {
   CreateLeaveRequestInput,
   HRServicesData,
+  LeaveRequest,
   LeaveRequestResponse,
   SaveLeaveDraftInput,
 } from '../types/leave.types';
@@ -28,6 +30,23 @@ export const getHRServices = async (): Promise<HRServicesData> => {
   return response.data;
 };
 
+export const getLeaveDetail = async (
+  id: string,
+): Promise<LeaveRequest> => {
+  if (useMock) {
+    return getMockLeaveDetail(
+      id,
+    );
+  }
+
+  const response =
+    await apiClient.get<LeaveRequest>(
+      `/leave-requests/${id}`,
+    );
+
+  return response.data;
+};
+
 export const createLeaveRequest = async (
   input: CreateLeaveRequestInput,
 ): Promise<LeaveRequestResponse> => {
@@ -42,12 +61,18 @@ export const createLeaveRequest = async (
     await apiClient.post<LeaveRequestResponse>(
       '/leave-requests',
       {
-        startDate: input.startDate,
-        endDate: input.endDate,
-        workingDays: input.workingDays,
-        reason: input.reason.trim(),
-        approverName: input.approverName,
-        isDraft: false,
+        startDate:
+          input.startDate,
+        endDate:
+          input.endDate,
+        workingDays:
+          input.workingDays,
+        reason:
+          input.reason.trim(),
+        approverName:
+          input.approverName,
+        isDraft:
+          false,
       },
     );
 
@@ -66,16 +91,22 @@ export const saveLeaveDraft = async (
 
   const payload = {
     startDate:
-      input.startDate || undefined,
+      input.startDate ||
+      undefined,
     endDate:
-      input.endDate || undefined,
+      input.endDate ||
+      undefined,
     workingDays:
-      input.workingDays || undefined,
+      input.workingDays ||
+      undefined,
     reason:
-      input.reason?.trim() || undefined,
+      input.reason?.trim() ||
+      undefined,
     approverName:
-      input.approverName || undefined,
-    isDraft: true,
+      input.approverName ||
+      undefined,
+    isDraft:
+      true,
   };
 
   const response =

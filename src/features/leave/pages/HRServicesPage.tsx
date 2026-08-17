@@ -1,34 +1,63 @@
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+} from 'react-router-dom';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
+
 import HRHistoryTable from '../components/HRHistoryTable';
-import { useHRServices } from '../hooks/useHRServices';
-import type { HRHistoryItem } from '../types/leave.types';
+
+import {
+  useHRServices,
+} from '../hooks/useHRServices';
+
+import type {
+  HRHistoryItem,
+} from '../types/leave.types';
 
 import styles from './HRServicesPage.module.css';
 
 function HRServicesPage() {
-  const navigate = useNavigate();
-  const hrServicesQuery = useHRServices();
+  const navigate =
+    useNavigate();
+
+  const hrServicesQuery =
+    useHRServices();
 
   const handleCreateLeave = () => {
-    navigate('/hr-services/leave/create');
+    navigate(
+      '/hr-services/leave/create',
+    );
   };
 
   const handleCreateBusinessTrip = () => {
-    navigate('/hr-services/business-trip/create');
+    navigate(
+      '/hr-services/business-trip/create',
+    );
   };
 
-  const handleViewDetail = (item: HRHistoryItem) => {
-    if (item.type === 'LEAVE') {
-      navigate(`/hr-services/leave/${item.id}`);
+  const handleViewDetail = (
+    item: HRHistoryItem,
+  ) => {
+    if (
+      item.type === 'LEAVE'
+    ) {
+      navigate(
+        `/hr-services/leave/${item.referenceId}`,
+      );
+
       return;
     }
 
-    navigate(`/hr-services/business-trip/${item.id}`);
+    navigate(
+      `/hr-services/business-trip/${item.referenceId}`,
+    );
   };
 
-  if (hrServicesQuery.isLoading) {
+  if (
+    hrServicesQuery.isLoading
+  ) {
     return (
       <div className={styles.stateContainer}>
         Memuat layanan HR...
@@ -36,7 +65,10 @@ function HRServicesPage() {
     );
   }
 
-  if (hrServicesQuery.isError || !hrServicesQuery.data) {
+  if (
+    hrServicesQuery.isError ||
+    !hrServicesQuery.data
+  ) {
     return (
       <div className={styles.stateContainer}>
         <p>
@@ -49,7 +81,9 @@ function HRServicesPage() {
         <button
           type="button"
           className={styles.retryButton}
-          onClick={() => hrServicesQuery.refetch()}
+          onClick={() => {
+            hrServicesQuery.refetch();
+          }}
         >
           Coba Lagi
         </button>
@@ -66,8 +100,13 @@ function HRServicesPage() {
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
-        <h1>HR Services</h1>
-        <p>Kelola cuti tahunan dan perjalanan dinas.</p>
+        <h1>
+          HR Services
+        </h1>
+
+        <p>
+          Kelola cuti tahunan dan perjalanan dinas.
+        </p>
       </header>
 
       <section className={styles.summaryGrid}>
@@ -82,8 +121,11 @@ function HRServicesPage() {
             </strong>
 
             <p className={styles.leaveDescription}>
-              Terpakai {leaveBalance.usedDays} dari{' '}
-              {leaveBalance.totalDays} hari
+              Terpakai{' '}
+              {leaveBalance.usedDays}{' '}
+              dari{' '}
+              {leaveBalance.totalDays}{' '}
+              hari
             </p>
           </div>
 
@@ -103,13 +145,25 @@ function HRServicesPage() {
             </p>
 
             <strong className={styles.tripValue}>
-              {businessTripSummary.activeCount} Pengajuan
+              {
+                businessTripSummary
+                  .activeCount
+              }{' '}
+              Pengajuan
             </strong>
 
             <p className={styles.tripDescription}>
-              {businessTripSummary.waitingApprovalCount} menunggu approval
+              {
+                businessTripSummary
+                  .waitingApprovalCount
+              }{' '}
+              menunggu approval
               {' • '}
-              {businessTripSummary.approvedCount} disetujui
+              {
+                businessTripSummary
+                  .approvedCount
+              }{' '}
+              disetujui
             </p>
           </div>
 
@@ -124,7 +178,9 @@ function HRServicesPage() {
       </section>
 
       <section className={styles.historySection}>
-        <h2>Riwayat HR</h2>
+        <h2>
+          Riwayat HR
+        </h2>
 
         <HRHistoryTable
           data={history}

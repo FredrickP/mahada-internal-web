@@ -1,0 +1,324 @@
+import { useNavigate } from 'react-router-dom';
+
+import { getApiErrorMessage } from '../../../lib/api/api-error';
+
+import PaymentTable from '../components/PaymentTable';
+import { usePayments } from '../hooks/usePayments';
+import type { PaymentRequest } from '../types/payment.types';
+
+import styles from './PaymentPage.module.css';
+
+function PaymentPage() {
+  const navigate = useNavigate();
+
+  const paymentsQuery =
+    usePayments();
+
+  const handleCreatePayment = () => {
+    navigate('/payment/create');
+  };
+
+  const handleViewDetail = (
+    payment: PaymentRequest,
+  ) => {
+    navigate(
+      `/payment/${payment.id}`,
+    );
+  };
+
+  if (paymentsQuery.isLoading) {
+    return (
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
+        Memuat pengajuan pembayaran...
+      </div>
+    );
+  }
+
+  if (
+    paymentsQuery.isError ||
+    !paymentsQuery.data
+  ) {
+    return (
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
+        <p>
+          {getApiErrorMessage(
+            paymentsQuery.error,
+            'Data pengajuan pembayaran gagal dimuat.',
+          )}
+        </p>
+
+        <button
+          type="button"
+          className={
+            styles.retryButton
+          }
+          onClick={() => {
+            paymentsQuery.refetch();
+          }}
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
+
+  const {
+    data,
+    summary,
+  } = paymentsQuery.data;
+
+  return (
+    <div className={styles.page}>
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
+        <div>
+          <h1>
+            Pengajuan Pembayaran
+          </h1>
+
+          <p>
+            Pantau pembayaran vendor
+            dari pengajuan hingga
+            eksekusi.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className={
+            styles.createButton
+          }
+          onClick={
+            handleCreatePayment
+          }
+        >
+          + Buat Pengajuan
+        </button>
+      </header>
+
+      <section
+        className={
+          styles.summaryGrid
+        }
+      >
+        <article
+          className={
+            styles.summaryCard
+          }
+          data-variant="waiting"
+        >
+          <div
+            className={
+              styles.summaryTop
+            }
+          >
+            <div
+              className={
+                styles.summaryIcon
+              }
+            />
+
+            <div>
+              <p
+                className={
+                  styles.summaryLabel
+                }
+              >
+                Menunggu Approval
+              </p>
+
+              <strong
+                className={
+                  styles.summaryValue
+                }
+              >
+                {
+                  summary.waitingApproval
+                }
+              </strong>
+            </div>
+          </div>
+
+          <p
+            className={
+              styles.summaryDescription
+            }
+          >
+            Approval atasan
+          </p>
+        </article>
+
+        <article
+          className={
+            styles.summaryCard
+          }
+          data-variant="finance"
+        >
+          <div
+            className={
+              styles.summaryTop
+            }
+          >
+            <div
+              className={
+                styles.summaryIcon
+              }
+            />
+
+            <div>
+              <p
+                className={
+                  styles.summaryLabel
+                }
+              >
+                Finance Check
+              </p>
+
+              <strong
+                className={
+                  styles.summaryValue
+                }
+              >
+                {
+                  summary.financeCheck
+                }
+              </strong>
+            </div>
+          </div>
+
+          <p
+            className={
+              styles.summaryDescription
+            }
+          >
+            Sedang diverifikasi
+          </p>
+        </article>
+
+        <article
+          className={
+            styles.summaryCard
+          }
+          data-variant="execution"
+        >
+          <div
+            className={
+              styles.summaryTop
+            }
+          >
+            <div
+              className={
+                styles.summaryIcon
+              }
+            />
+
+            <div>
+              <p
+                className={
+                  styles.summaryLabel
+                }
+              >
+                Siap Dieksekusi
+              </p>
+
+              <strong
+                className={
+                  styles.summaryValue
+                }
+              >
+                {
+                  summary.readyForExecution
+                }
+              </strong>
+            </div>
+          </div>
+
+          <p
+            className={
+              styles.summaryDescription
+            }
+          >
+            Menunggu pembayaran
+          </p>
+        </article>
+
+        <article
+          className={
+            styles.summaryCard
+          }
+          data-variant="completed"
+        >
+          <div
+            className={
+              styles.summaryTop
+            }
+          >
+            <div
+              className={
+                styles.summaryIcon
+              }
+            />
+
+            <div>
+              <p
+                className={
+                  styles.summaryLabel
+                }
+              >
+                Selesai
+              </p>
+
+              <strong
+                className={
+                  styles.summaryValue
+                }
+              >
+                {
+                  summary.completed
+                }
+              </strong>
+            </div>
+          </div>
+
+          <p
+            className={
+              styles.summaryDescription
+            }
+          >
+            Bulan berjalan
+          </p>
+        </article>
+      </section>
+
+      <section
+        className={
+          styles.listSection
+        }
+      >
+        <h2>
+          Daftar Pengajuan Pembayaran
+        </h2>
+
+        <PaymentTable
+          data={data}
+          onViewDetail={
+            handleViewDetail
+          }
+        />
+      </section>
+    </div>
+  );
+}
+
+export default PaymentPage;

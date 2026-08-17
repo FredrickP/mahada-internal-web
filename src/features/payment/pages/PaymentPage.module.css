@@ -1,0 +1,207 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 38px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.createButton {
+  min-width: 172px;
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+  border-radius: 9px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.createButton:hover {
+  background: #a87819;
+  border-color: #a87819;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    minmax(0, 1fr)
+  );
+  gap: 20px;
+}
+
+.summaryCard {
+  min-height: 142px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e5ded2;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(50, 42, 25, 0.05);
+}
+
+.summaryTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.summaryIcon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.summaryCard[data-variant='waiting']
+  .summaryIcon {
+  background: #e27b00;
+}
+
+.summaryCard[data-variant='finance']
+  .summaryIcon,
+.summaryCard[data-variant='execution']
+  .summaryIcon {
+  background: #bd8b22;
+}
+
+.summaryCard[data-variant='completed']
+  .summaryIcon {
+  background: #1d8c5f;
+}
+
+.summaryCard[data-variant='completed'] {
+  border-color: #bfe3d4;
+}
+
+.summaryLabel {
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #707070;
+}
+
+.summaryValue {
+  display: block;
+  margin-top: 7px;
+  font-size: 29px;
+  font-weight: 700;
+  line-height: 1;
+  color: #363636;
+}
+
+.summaryDescription {
+  margin: 27px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.summaryCard[data-variant='waiting']
+  .summaryDescription {
+  color: #d96e00;
+}
+
+.summaryCard[data-variant='finance']
+  .summaryDescription,
+.summaryCard[data-variant='execution']
+  .summaryDescription {
+  color: #b47c10;
+}
+
+.summaryCard[data-variant='completed']
+  .summaryDescription {
+  color: #19845b;
+}
+
+.listSection {
+  margin-top: 48px;
+}
+
+.listSection h2 {
+  margin: 0 0 18px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #3e3e3e;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 400px;
+  font-size: 13px;
+  text-align: center;
+  color: #777777;
+}
+
+.retryButton {
+  margin-top: 14px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 1100px) {
+  .summaryGrid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    flex-direction: column;
+    margin-bottom: 28px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .createButton {
+    width: 100%;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryCard {
+    min-height: auto;
+  }
+
+  .listSection {
+    margin-top: 34px;
+  }
+}

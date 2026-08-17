@@ -1,0 +1,419 @@
+.page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 18px;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a87512;
+  background: transparent;
+  border: 0;
+}
+
+.backButton:hover {
+  color: #805706;
+}
+
+.pageHeader {
+  margin-bottom: 30px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.roleCard {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 14px;
+}
+
+.roleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+.roleIcon[data-role='USER'] {
+  color: #6c5c3f;
+  background: #eee9de;
+}
+
+.roleIcon[data-role='APPROVER'] {
+  color: #ffffff;
+  background: #bd8b22;
+}
+
+.roleIcon[data-role='PROCESSOR'] {
+  color: #ffffff;
+  background: #427d84;
+}
+
+.roleIcon[data-role='ADMIN'] {
+  color: #ffffff;
+  background: #36322b;
+}
+
+.roleInformation {
+  min-width: 0;
+}
+
+.roleTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.roleTitle h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #414141;
+}
+
+.roleTitle span {
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #8a6519;
+  background: #fff1cd;
+  border-radius: 999px;
+}
+
+.roleInformation p {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.roleStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #287158;
+  background: #e7f5ef;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+
+.permissionCard {
+  margin-top: 28px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 14px;
+}
+
+.permissionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px;
+  border-bottom: 1px solid #ebe5dc;
+}
+
+.permissionHeader h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #414141;
+}
+
+.permissionHeader p {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #919191;
+}
+
+.permissionCount {
+  flex-shrink: 0;
+  padding: 6px 11px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #7d6532;
+  background: #f6f1e7;
+  border-radius: 999px;
+}
+
+.permissionList {
+  display: flex;
+  flex-direction: column;
+}
+
+.permissionItem {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 15px;
+  align-items: center;
+  min-height: 78px;
+  padding: 17px 24px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee9e0;
+  transition: background-color 0.2s ease;
+}
+
+.permissionItem:last-child {
+  border-bottom: 0;
+}
+
+.permissionItem:hover {
+  background: #fffdf9;
+}
+
+.permissionItem[data-active='true'] {
+  background: #fffdf9;
+}
+
+.permissionItem input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.customCheckbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #cfc7bb;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.permissionItem[data-active='true'] .customCheckbox {
+  background: #bd8b22;
+  border-color: #bd8b22;
+}
+
+.permissionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.permissionContent strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: #454545;
+}
+
+.permissionContent > span {
+  font-size: 10px;
+  line-height: 1.5;
+  color: #8c8c8c;
+}
+
+.permissionStatus {
+  min-width: 80px;
+  padding: 6px 10px;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+  color: #8d8d8d;
+  background: #f1efeb;
+  border-radius: 999px;
+}
+
+.permissionStatus[data-active='true'] {
+  color: #247253;
+  background: #e5f5ee;
+}
+
+.successMessage,
+.errorMessage {
+  margin-top: 18px;
+  padding: 12px 14px;
+  font-size: 11px;
+  line-height: 1.5;
+  border-radius: 9px;
+}
+
+.successMessage {
+  color: #247253;
+  background: #e6f5ee;
+  border: 1px solid #cde8dc;
+}
+
+.errorMessage {
+  color: #a03d3d;
+  background: #fceaea;
+  border: 1px solid #f0cece;
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 13px;
+  margin-top: 24px;
+}
+
+.cancelButton,
+.saveButton {
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+}
+
+.cancelButton {
+  min-width: 130px;
+  color: #555555;
+  background: #ffffff;
+  border: 1px solid #d7cfc2;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #faf8f3;
+}
+
+.saveButton {
+  min-width: 160px;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #a87819;
+  border-color: #a87819;
+}
+
+.cancelButton:disabled,
+.saveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 400px;
+  font-size: 13px;
+  text-align: center;
+  color: #777777;
+}
+
+.stateContainer h2 {
+  margin: 14px 0 0;
+  font-size: 18px;
+  color: #444444;
+}
+
+.stateContainer p {
+  margin: 7px 0 0;
+}
+
+.stateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #a03d3d;
+  background: #fceaea;
+  border-radius: 50%;
+}
+
+.retryButton {
+  margin-top: 16px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .roleCard {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
+  .roleStatus {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+
+  .roleTitle {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .permissionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .permissionItem {
+    grid-template-columns: 22px minmax(0, 1fr);
+    padding: 16px 18px;
+  }
+
+  .permissionStatus {
+    grid-column: 2;
+    width: fit-content;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .saveButton {
+    width: 100%;
+  }
+}

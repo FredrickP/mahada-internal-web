@@ -1,0 +1,337 @@
+.page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 18px;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a87512;
+  background: transparent;
+  border: 0;
+}
+
+.backButton:hover {
+  color: #805706;
+}
+
+.pageHeader {
+  margin-bottom: 34px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  max-width: 650px;
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.formCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 16px;
+}
+
+.section {
+  padding: 32px 34px;
+}
+
+.sectionHeader {
+  margin-bottom: 26px;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #414141;
+}
+
+.sectionHeader p {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #919191;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 25px 30px;
+}
+
+.accessGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 25px 30px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.formGroup label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #4c4c4c;
+}
+
+.formGroup input,
+.formGroup select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 12px;
+  color: #4e4e4e;
+  background: #ffffff;
+  border: 1px solid #d9d2c5;
+  border-radius: 9px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  border-color: #bd8b22;
+  box-shadow: 0 0 0 3px rgba(189, 139, 34, 0.1);
+}
+
+.formGroup input::placeholder {
+  color: #aaaaaa;
+}
+
+.formGroup input:disabled,
+.formGroup select:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.formGroup select {
+  cursor: pointer;
+}
+
+.errorText {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #b74747;
+}
+
+.divider {
+  height: 1px;
+  background: #ebe5dc;
+}
+
+.roleInformation {
+  margin-top: 30px;
+  padding: 20px;
+  background: #fcfaf5;
+  border: 1px solid #e9e0d1;
+  border-radius: 11px;
+}
+
+.roleInformation > strong {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4b4b4b;
+}
+
+.roleItems {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.roleItems > div {
+  padding-right: 15px;
+  border-right: 1px solid #e5ddcf;
+}
+
+.roleItems > div:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.roleItems span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a8730e;
+}
+
+.roleItems p {
+  margin: 5px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #858585;
+}
+
+.submitError {
+  margin: 0 34px;
+  padding: 11px 13px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #a03d3d;
+  background: #fceaea;
+  border: 1px solid #f0cece;
+  border-radius: 8px;
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 13px;
+  padding: 28px 34px 32px;
+}
+
+.cancelButton,
+.submitButton {
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.cancelButton {
+  min-width: 110px;
+  color: #555555;
+  background: #ffffff;
+  border: 1px solid #d7cfc2;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #faf8f3;
+  border-color: #c7bcac;
+}
+
+.submitButton {
+  min-width: 150px;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #a87819;
+  border-color: #a87819;
+}
+
+.cancelButton:disabled,
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 400px;
+  font-size: 13px;
+  text-align: center;
+  color: #777777;
+}
+
+.retryButton {
+  margin-top: 14px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 900px) {
+  .roleItems {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .roleItems > div {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    margin-bottom: 26px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .section {
+    padding: 24px 20px;
+  }
+
+  .formGrid,
+  .accessGrid,
+  .roleItems {
+    grid-template-columns: 1fr;
+  }
+
+  .roleInformation {
+    margin-top: 24px;
+  }
+
+  .roleItems {
+    gap: 14px;
+  }
+
+  .roleItems > div {
+    padding: 0 0 14px;
+    border-bottom: 1px solid #e5ddcf;
+  }
+
+  .roleItems > div:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .submitError {
+    margin: 0 20px;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+    padding: 24px 20px;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+  }
+}

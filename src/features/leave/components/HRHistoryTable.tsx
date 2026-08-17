@@ -1,11 +1,10 @@
 import {
   hrSubmissionTypeConfig,
-  leaveStatusConfig,
 } from '../constants/leave-config';
 
 import type {
   HRHistoryItem,
-  LeaveStatus,
+  HRHistoryStatus,
 } from '../types/leave.types';
 
 import styles from './HRHistoryTable.module.css';
@@ -16,14 +15,34 @@ interface HRHistoryTableProps {
 }
 
 const statusClassMap: Record<
-  LeaveStatus,
+  HRHistoryStatus,
   string
 > = {
   DRAFT: styles.draft,
   SUBMITTED: styles.submitted,
+  WAITING_APPROVAL: styles.submitted,
   APPROVED: styles.approved,
   COMPLETED: styles.completed,
   REJECTED: styles.rejected,
+};
+
+const getStatusLabel = (
+  status: HRHistoryStatus,
+): string => {
+  switch (status) {
+    case 'DRAFT':
+      return 'Draft';
+    case 'SUBMITTED':
+      return 'Diajukan';
+    case 'WAITING_APPROVAL':
+      return 'Menunggu Approval';
+    case 'APPROVED':
+      return 'Disetujui';
+    case 'COMPLETED':
+      return 'Selesai';
+    case 'REJECTED':
+      return 'Ditolak';
+  }
 };
 
 function HRHistoryTable({
@@ -43,10 +62,22 @@ function HRHistoryTable({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>No. Pengajuan</th>
-            <th>Jenis</th>
-            <th>Periode / Tujuan</th>
-            <th>Status</th>
+            <th>
+              No. Pengajuan
+            </th>
+
+            <th>
+              Jenis
+            </th>
+
+            <th>
+              Periode / Tujuan
+            </th>
+
+            <th>
+              Status
+            </th>
+
             <th className={styles.actionColumn}>
               Aksi
             </th>
@@ -58,11 +89,6 @@ function HRHistoryTable({
             const typeConfig =
               hrSubmissionTypeConfig[
                 item.type
-              ];
-
-            const statusConfig =
-              leaveStatusConfig[
-                item.status
               ];
 
             return (
@@ -80,7 +106,9 @@ function HRHistoryTable({
                 </td>
 
                 <td>
-                  {typeConfig.label}
+                  {
+                    typeConfig.label
+                  }
                 </td>
 
                 <td>
@@ -97,7 +125,11 @@ function HRHistoryTable({
                       ]
                     }`}
                   >
-                    {statusConfig.label}
+                    {
+                      getStatusLabel(
+                        item.status,
+                      )
+                    }
                   </span>
                 </td>
 
@@ -112,7 +144,9 @@ function HRHistoryTable({
                       styles.detailButton
                     }
                     onClick={() => {
-                      onViewDetail(item);
+                      onViewDetail(
+                        item,
+                      );
                     }}
                   >
                     Lihat Detail

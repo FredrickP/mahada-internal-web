@@ -9,6 +9,14 @@ export type HRSubmissionType =
   | 'LEAVE'
   | 'BUSINESS_TRIP';
 
+export type HRHistoryStatus =
+  | 'DRAFT'
+  | 'SUBMITTED'
+  | 'WAITING_APPROVAL'
+  | 'APPROVED'
+  | 'COMPLETED'
+  | 'REJECTED';
+
 export interface LeaveBalance {
   totalDays: number;
   usedDays: number;
@@ -35,11 +43,12 @@ export interface BusinessTripSummary {
 
 export interface HRHistoryItem {
   id: string;
+  referenceId: string;
   submissionNumber: string;
   type: HRSubmissionType;
   typeLabel: string;
   periodOrDestination: string;
-  status: LeaveStatus;
+  status: HRHistoryStatus;
 }
 
 export interface HRServicesData {

@@ -1,0 +1,275 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 38px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 30px;
+  align-items: start;
+}
+
+.formCard {
+  padding: 34px 35px 26px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 16px;
+}
+
+.formCard h2 {
+  margin: 0 0 30px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #3d3d3d;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 25px 30px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label,
+.purposeGroup label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+.formGroup input,
+.purposeGroup textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  color: #4e4e4e;
+  background: #ffffff;
+  border: 1px solid #d8d4ca;
+  border-radius: 10px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.formGroup input {
+  min-height: 50px;
+  padding: 0 15px;
+}
+
+.purposeGroup textarea {
+  min-height: 96px;
+  padding: 14px 15px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.formGroup input:focus,
+.purposeGroup textarea:focus {
+  border-color: #b58a2a;
+  box-shadow: 0 0 0 3px rgba(181, 138, 42, 0.1);
+}
+
+.formGroup input:disabled,
+.purposeGroup textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.formGroup input::placeholder,
+.purposeGroup textarea::placeholder {
+  color: #9a9a9a;
+}
+
+.readOnlyInput {
+  cursor: default;
+  color: #4a4a4a !important;
+  background: #fdfcf9 !important;
+}
+
+.purposeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.errorText {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #b74747;
+}
+
+.submitError {
+  margin-top: 18px;
+  padding: 11px 13px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #a03d3d;
+  background: #fceaea;
+  border: 1px solid #f0cece;
+  border-radius: 8px;
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.draftButton,
+.submitButton {
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.draftButton {
+  min-width: 122px;
+  color: #4a4a4a;
+  background: #ffffff;
+  border: 1px solid #d8d4ca;
+}
+
+.draftButton:hover:not(:disabled) {
+  background: #faf8f3;
+  border-color: #c9c1b4;
+}
+
+.submitButton {
+  min-width: 128px;
+  color: #ffffff;
+  background: #b58a2a;
+  border: 1px solid #b58a2a;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #9d7520;
+  border-color: #9d7520;
+}
+
+.draftButton:disabled,
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.infoCard {
+  min-height: 250px;
+  padding: 30px 24px;
+  background: #fff8e8;
+  border-radius: 15px;
+}
+
+.infoCard h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #8a6517;
+}
+
+.infoCard p {
+  margin: 22px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #4a4a4a;
+}
+
+@media (max-width: 1100px) {
+  .contentGrid {
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: 22px;
+  }
+
+  .formCard {
+    padding: 30px 28px 26px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .infoCard {
+    order: -1;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    margin-bottom: 26px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .formCard {
+    padding: 24px 20px 28px;
+  }
+
+  .formCard h2 {
+    margin-bottom: 24px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .purposeGroup {
+    margin-top: 20px;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+    margin-top: 30px;
+  }
+
+  .draftButton,
+  .submitButton {
+    width: 100%;
+  }
+
+  .infoCard {
+    padding: 23px 20px;
+  }
+}

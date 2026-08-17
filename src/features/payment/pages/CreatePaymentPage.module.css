@@ -1,0 +1,292 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 38px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #383838;
+}
+
+.pageHeader p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+}
+
+.formCard {
+  padding: 34px 35px 48px;
+  background: #ffffff;
+  border: 1px solid #e3ddd2;
+  border-radius: 16px;
+}
+
+.formCard section + section {
+  margin-top: 34px;
+}
+
+.formCard h2 {
+  margin: 0 0 28px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #3d3d3d;
+}
+
+.vendorGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  );
+  gap: 25px 34px;
+}
+
+.paymentGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    minmax(0, 1fr)
+  );
+  gap: 28px;
+}
+
+.documentGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  );
+  gap: 34px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.formGroup label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #494949;
+}
+
+.formGroup input {
+  width: 100%;
+  min-height: 49px;
+  padding: 0 13px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #4e4e4e;
+  background: #ffffff;
+  border: 1px solid #d9d2c5;
+  border-radius: 9px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.formGroup input:focus {
+  border-color: #bd8b22;
+  box-shadow: 0 0 0 3px rgba(189, 139, 34, 0.1);
+}
+
+.formGroup input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.formGroup input::placeholder {
+  color: #aaaaaa;
+}
+
+.readOnlyInput {
+  cursor: default;
+  color: #555555 !important;
+  background: #fdfcf9 !important;
+}
+
+.taxInformation {
+  margin: 15px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #8e8e8e;
+}
+
+.documentSection {
+  margin-top: 26px !important;
+}
+
+.fileField {
+  display: flex;
+  align-items: center;
+  min-height: 49px;
+  padding: 0 13px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #d9d2c5;
+  border-radius: 9px;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.fileField:hover {
+  background: #fdfbf7;
+  border-color: #cfc4b3;
+}
+
+.fileField span {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 400;
+  color: #999999;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileField input {
+  display: none;
+}
+
+.errorText {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #b74747;
+}
+
+.submitError {
+  margin-top: 22px;
+  padding: 11px 13px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #a03d3d;
+  background: #fceaea;
+  border: 1px solid #f0cece;
+  border-radius: 8px;
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 46px;
+}
+
+.draftButton,
+.submitButton {
+  min-height: 45px;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.draftButton {
+  min-width: 120px;
+  color: #555555;
+  background: #ffffff;
+  border: 1px solid #d7cfc2;
+}
+
+.draftButton:hover:not(:disabled) {
+  background: #faf8f3;
+  border-color: #c7bcac;
+}
+
+.submitButton {
+  min-width: 136px;
+  color: #ffffff;
+  background: #bd8b22;
+  border: 1px solid #bd8b22;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #a87819;
+  border-color: #a87819;
+}
+
+.draftButton:disabled,
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 1100px) {
+  .vendorGrid {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  }
+
+  .paymentGrid {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  }
+
+  .documentGrid {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  }
+}
+
+@media (max-width: 767px) {
+  .pageHeader {
+    margin-bottom: 26px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+
+  .formCard {
+    padding: 24px 20px 30px;
+  }
+
+  .formCard h2 {
+    margin-bottom: 24px;
+  }
+
+  .vendorGrid,
+  .paymentGrid,
+  .documentGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+    margin-top: 32px;
+  }
+
+  .draftButton,
+  .submitButton {
+    width: 100%;
+  }
+}
