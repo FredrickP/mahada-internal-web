@@ -1,21 +1,85 @@
-import { useNavigate } from 'react-router-dom';
+import {
+  useMemo,
+  useState,
+} from 'react';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  useNavigate,
+} from 'react-router-dom';
+
+import Pagination, {
+  type PaginationPageSize,
+} from '../../../components/common/Pagination';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import PaymentTable from '../components/PaymentTable';
-import { usePayments } from '../hooks/usePayments';
-import type { PaymentRequest } from '../types/payment.types';
+
+import {
+  usePayments,
+} from '../hooks/usePayments';
+
+import type {
+  PaymentRequest,
+} from '../types/payment.types';
 
 import styles from './PaymentPage.module.css';
 
 function PaymentPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
+
+  const [
+    currentPage,
+    setCurrentPage,
+  ] = useState(1);
+
+  const [
+    pageSize,
+    setPageSize,
+  ] = useState<PaginationPageSize>(
+    10,
+  );
 
   const paymentsQuery =
     usePayments();
 
+  const data =
+    paymentsQuery.data?.data ??
+    [];
+
+  const paginatedData =
+    useMemo(() => {
+      if (
+        pageSize === 'ALL'
+      ) {
+        return data;
+      }
+
+      const startIndex =
+        (
+          currentPage -
+          1
+        ) *
+        pageSize;
+
+      return data.slice(
+        startIndex,
+        startIndex +
+          pageSize,
+      );
+    }, [
+      data,
+      currentPage,
+      pageSize,
+    ]);
+
   const handleCreatePayment = () => {
-    navigate('/payment/create');
+    navigate(
+      '/payment/create',
+    );
   };
 
   const handleViewDetail = (
@@ -26,7 +90,21 @@ function PaymentPage() {
     );
   };
 
-  if (paymentsQuery.isLoading) {
+  const handlePageSizeChange = (
+    value: PaginationPageSize,
+  ) => {
+    setPageSize(
+      value,
+    );
+
+    setCurrentPage(
+      1,
+    );
+  };
+
+  if (
+    paymentsQuery.isLoading
+  ) {
     return (
       <div
         className={
@@ -71,12 +149,15 @@ function PaymentPage() {
   }
 
   const {
-    data,
     summary,
   } = paymentsQuery.data;
 
   return (
-    <div className={styles.page}>
+    <div
+      className={
+        styles.page
+      }
+    >
       <header
         className={
           styles.pageHeader
@@ -311,9 +392,29 @@ function PaymentPage() {
         </h2>
 
         <PaymentTable
-          data={data}
+          data={
+            paginatedData
+          }
           onViewDetail={
             handleViewDetail
+          }
+        />
+
+        <Pagination
+          currentPage={
+            currentPage
+          }
+          totalItems={
+            data.length
+          }
+          pageSize={
+            pageSize
+          }
+          onPageChange={
+            setCurrentPage
+          }
+          onPageSizeChange={
+            handlePageSizeChange
           }
         />
       </section>

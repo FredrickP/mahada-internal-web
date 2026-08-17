@@ -7,6 +7,10 @@ import {
   useNavigate,
 } from 'react-router-dom';
 
+import Pagination, {
+  type PaginationPageSize,
+} from '../../../components/common/Pagination';
+
 import {
   getApiErrorMessage,
 } from '../../../lib/api/api-error';
@@ -37,6 +41,18 @@ function HRServicesPage() {
     setTypeFilter,
   ] = useState<HRTypeFilter>(
     'ALL',
+  );
+
+  const [
+    currentPage,
+    setCurrentPage,
+  ] = useState(1);
+
+  const [
+    pageSize,
+    setPageSize,
+  ] = useState<PaginationPageSize>(
+    10,
   );
 
   const hrServicesQuery =
@@ -96,6 +112,56 @@ function HRServicesPage() {
       history,
       typeFilter,
     ]);
+
+  const paginatedHistory =
+    useMemo(() => {
+      if (
+        pageSize === 'ALL'
+      ) {
+        return filteredHistory;
+      }
+
+      const startIndex =
+        (
+          currentPage -
+          1
+        ) *
+        pageSize;
+
+      return filteredHistory.slice(
+        startIndex,
+        startIndex +
+          pageSize,
+      );
+    }, [
+      filteredHistory,
+      currentPage,
+      pageSize,
+    ]);
+
+  const handleTypeFilterChange = (
+    value: HRTypeFilter,
+  ) => {
+    setTypeFilter(
+      value,
+    );
+
+    setCurrentPage(
+      1,
+    );
+  };
+
+  const handlePageSizeChange = (
+    value: PaginationPageSize,
+  ) => {
+    setPageSize(
+      value,
+    );
+
+    setCurrentPage(
+      1,
+    );
+  };
 
   if (
     hrServicesQuery.isLoading
@@ -302,19 +368,25 @@ function HRServicesPage() {
       >
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
+            display:
+              'flex',
+            alignItems:
+              'center',
             justifyContent:
               'space-between',
-            gap: '16px',
-            marginBottom: '18px',
-            flexWrap: 'wrap',
+            gap:
+              '16px',
+            marginBottom:
+              '18px',
+            flexWrap:
+              'wrap',
           }}
         >
           <div>
             <h2
               style={{
-                margin: 0,
+                margin:
+                  0,
               }}
             >
               Riwayat HR
@@ -330,18 +402,18 @@ function HRServicesPage() {
                   '13px',
               }}
             >
-              {
-                filteredHistory.length
-              }{' '}
-              pengajuan ditampilkan
+              Filter riwayat berdasarkan jenis pengajuan.
             </p>
           </div>
 
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
+              display:
+                'flex',
+              alignItems:
+                'center',
+              gap:
+                '10px',
             }}
           >
             <label
@@ -366,7 +438,7 @@ function HRServicesPage() {
               onChange={(
                 event,
               ) => {
-                setTypeFilter(
+                handleTypeFilterChange(
                   event.target
                     .value as HRTypeFilter,
                 );
@@ -396,21 +468,15 @@ function HRServicesPage() {
                   'none',
               }}
             >
-              <option
-                value="ALL"
-              >
+              <option value="ALL">
                 Semua Pengajuan
               </option>
 
-              <option
-                value="LEAVE"
-              >
+              <option value="LEAVE">
                 Cuti Tahunan
               </option>
 
-              <option
-                value="BUSINESS_TRIP"
-              >
+              <option value="BUSINESS_TRIP">
                 Perjalanan Dinas
               </option>
             </select>
@@ -419,10 +485,28 @@ function HRServicesPage() {
 
         <HRHistoryTable
           data={
-            filteredHistory
+            paginatedHistory
           }
           onViewDetail={
             handleViewDetail
+          }
+        />
+
+        <Pagination
+          currentPage={
+            currentPage
+          }
+          totalItems={
+            filteredHistory.length
+          }
+          pageSize={
+            pageSize
+          }
+          onPageChange={
+            setCurrentPage
+          }
+          onPageSizeChange={
+            handlePageSizeChange
           }
         />
       </section>

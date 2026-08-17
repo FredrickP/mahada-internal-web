@@ -11,6 +11,10 @@ import {
   X,
 } from 'lucide-react';
 
+import Pagination, {
+  type PaginationPageSize,
+} from '../../../components/common/Pagination';
+
 import { getApiErrorMessage } from '../../../lib/api/api-error';
 
 import {
@@ -77,6 +81,18 @@ function LeaveBalancePage() {
     setAppliedFilter,
   ] = useState<LeaveBalanceFilter>(
     initialFilter,
+  );
+
+  const [
+    currentPage,
+    setCurrentPage,
+  ] = useState(1);
+
+  const [
+    pageSize,
+    setPageSize,
+  ] = useState<PaginationPageSize>(
+    10,
   );
 
   const [
@@ -164,6 +180,32 @@ function LeaveBalancePage() {
       leaveBalanceQuery.data,
     ]);
 
+  const paginatedBalances =
+    useMemo(() => {
+      if (
+        pageSize === 'ALL'
+      ) {
+        return filteredBalances;
+      }
+
+      const startIndex =
+        (
+          currentPage -
+          1
+        ) *
+        pageSize;
+
+      return filteredBalances.slice(
+        startIndex,
+        startIndex +
+          pageSize,
+      );
+    }, [
+      filteredBalances,
+      currentPage,
+      pageSize,
+    ]);
+
   const previewRemainingBalance =
     useMemo(() => {
       if (!selectedBalance) {
@@ -211,6 +253,10 @@ function LeaveBalancePage() {
     setAppliedFilter({
       ...formFilter,
     });
+
+    setCurrentPage(
+      1,
+    );
   };
 
   const handleResetFilter = () => {
@@ -220,6 +266,22 @@ function LeaveBalancePage() {
 
     setAppliedFilter(
       initialFilter,
+    );
+
+    setCurrentPage(
+      1,
+    );
+  };
+
+  const handlePageSizeChange = (
+    value: PaginationPageSize,
+  ) => {
+    setPageSize(
+      value,
+    );
+
+    setCurrentPage(
+      1,
     );
   };
 
@@ -430,6 +492,10 @@ function LeaveBalancePage() {
                 Number(
                   event.target.value,
                 ),
+              );
+
+              setCurrentPage(
+                1,
               );
             }}
           >
@@ -680,7 +746,7 @@ function LeaveBalancePage() {
             </thead>
 
             <tbody>
-              {filteredBalances.map(
+              {paginatedBalances.map(
                 (balance) => (
                   <tr
                     key={
@@ -789,6 +855,27 @@ function LeaveBalancePage() {
             </div>
           )}
         </div>
+
+        {filteredBalances.length >
+          0 && (
+          <Pagination
+            currentPage={
+              currentPage
+            }
+            totalItems={
+              filteredBalances.length
+            }
+            pageSize={
+              pageSize
+            }
+            onPageChange={
+              setCurrentPage
+            }
+            onPageSizeChange={
+              handlePageSizeChange
+            }
+          />
+        )}
       </section>
 
       {selectedBalance && (

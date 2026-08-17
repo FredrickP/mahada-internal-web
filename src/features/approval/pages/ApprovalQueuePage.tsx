@@ -1,19 +1,80 @@
-import { useNavigate } from 'react-router-dom';
+import {
+  useMemo,
+  useState,
+} from 'react';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  useNavigate,
+} from 'react-router-dom';
+
+import Pagination, {
+  type PaginationPageSize,
+} from '../../../components/common/Pagination';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import ApprovalTable from '../components/ApprovalTable';
-import { useApprovalQueue } from '../hooks/useApprovalQueue';
 
-import type { ApprovalQueueItem } from '../types/approval.types';
+import {
+  useApprovalQueue,
+} from '../hooks/useApprovalQueue';
+
+import type {
+  ApprovalQueueItem,
+} from '../types/approval.types';
 
 import styles from './ApprovalQueuePage.module.css';
 
 function ApprovalQueuePage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
+
+  const [
+    currentPage,
+    setCurrentPage,
+  ] = useState(1);
+
+  const [
+    pageSize,
+    setPageSize,
+  ] = useState<PaginationPageSize>(
+    10,
+  );
 
   const approvalQuery =
     useApprovalQueue();
+
+  const approvals =
+    approvalQuery.data ??
+    [];
+
+  const paginatedApprovals =
+    useMemo(() => {
+      if (
+        pageSize === 'ALL'
+      ) {
+        return approvals;
+      }
+
+      const startIndex =
+        (
+          currentPage -
+          1
+        ) *
+        pageSize;
+
+      return approvals.slice(
+        startIndex,
+        startIndex +
+          pageSize,
+      );
+    }, [
+      approvals,
+      currentPage,
+      pageSize,
+    ]);
 
   const handleViewDetail = (
     approval: ApprovalQueueItem,
@@ -23,9 +84,27 @@ function ApprovalQueuePage() {
     );
   };
 
-  if (approvalQuery.isLoading) {
+  const handlePageSizeChange = (
+    value: PaginationPageSize,
+  ) => {
+    setPageSize(
+      value,
+    );
+
+    setCurrentPage(
+      1,
+    );
+  };
+
+  if (
+    approvalQuery.isLoading
+  ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         Memuat daftar approval...
       </div>
     );
@@ -36,7 +115,11 @@ function ApprovalQueuePage() {
     !approvalQuery.data
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         <p>
           {getApiErrorMessage(
             approvalQuery.error,
@@ -46,7 +129,9 @@ function ApprovalQueuePage() {
 
         <button
           type="button"
-          className={styles.retryButton}
+          className={
+            styles.retryButton
+          }
           onClick={() => {
             approvalQuery.refetch();
           }}
@@ -57,12 +142,17 @@ function ApprovalQueuePage() {
     );
   }
 
-  const approvals =
-    approvalQuery.data;
-
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <div>
           <h1>
             Approval
@@ -74,7 +164,11 @@ function ApprovalQueuePage() {
           </p>
         </div>
 
-        <div className={styles.queueSummary}>
+        <div
+          className={
+            styles.queueSummary
+          }
+        >
           <span>
             Menunggu Approval
           </span>
@@ -85,8 +179,16 @@ function ApprovalQueuePage() {
         </div>
       </header>
 
-      <section className={styles.listSection}>
-        <div className={styles.sectionHeader}>
+      <section
+        className={
+          styles.listSection
+        }
+      >
+        <div
+          className={
+            styles.sectionHeader
+          }
+        >
           <div>
             <h2>
               Approval Queue
@@ -100,8 +202,30 @@ function ApprovalQueuePage() {
         </div>
 
         <ApprovalTable
-          data={approvals}
-          onViewDetail={handleViewDetail}
+          data={
+            paginatedApprovals
+          }
+          onViewDetail={
+            handleViewDetail
+          }
+        />
+
+        <Pagination
+          currentPage={
+            currentPage
+          }
+          totalItems={
+            approvals.length
+          }
+          pageSize={
+            pageSize
+          }
+          onPageChange={
+            setCurrentPage
+          }
+          onPageSizeChange={
+            handlePageSizeChange
+          }
         />
       </section>
     </div>

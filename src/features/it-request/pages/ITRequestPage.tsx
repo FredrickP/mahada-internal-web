@@ -1,15 +1,26 @@
 import {
+  useMemo,
   useState,
 } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+} from 'react-router-dom';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import Pagination, {
+  type PaginationPageSize,
+} from '../../../components/common/Pagination';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import ITRequestFilter from '../components/ITRequestFilter';
 import ITRequestTable from '../components/ITRequestTable';
 
-import { useITRequests } from '../hooks/useITRequests';
+import {
+  useITRequests,
+} from '../hooks/useITRequests';
 
 import type {
   ITRequest,
@@ -25,7 +36,8 @@ const defaultFilter: ITRequestFilterValue = {
 };
 
 function ITRequestPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const [
     appliedFilter,
@@ -34,52 +46,139 @@ function ITRequestPage() {
     defaultFilter,
   );
 
+  const [
+    currentPage,
+    setCurrentPage,
+  ] = useState(1);
+
+  const [
+    pageSize,
+    setPageSize,
+  ] = useState<PaginationPageSize>(
+    10,
+  );
+
   const itRequestsQuery =
-    useITRequests(appliedFilter);
+    useITRequests(
+      appliedFilter,
+    );
+
+  const requests =
+    itRequestsQuery.data?.data ??
+    [];
+
+  const paginatedRequests =
+    useMemo(() => {
+      if (
+        pageSize === 'ALL'
+      ) {
+        return requests;
+      }
+
+      const startIndex =
+        (
+          currentPage -
+          1
+        ) *
+        pageSize;
+
+      return requests.slice(
+        startIndex,
+        startIndex +
+          pageSize,
+      );
+    }, [
+      requests,
+      currentPage,
+      pageSize,
+    ]);
 
   const handleCreateRequest = () => {
-    navigate('/it-request/create');
+    navigate(
+      '/it-request/create',
+    );
   };
 
   const handleApplyFilter = (
     filter: ITRequestFilterValue,
   ) => {
     setAppliedFilter({
-      search: filter.search.trim(),
-      type: filter.type,
-      status: filter.status,
+      search:
+        filter.search.trim(),
+      type:
+        filter.type,
+      status:
+        filter.status,
     });
+
+    setCurrentPage(
+      1,
+    );
   };
 
-const handleViewDetail = (
-request: ITRequest,
-) => {
-navigate(
-    `/it-request/${request.id}`,
-);
-};
+  const handlePageSizeChange = (
+    value: PaginationPageSize,
+  ) => {
+    setPageSize(
+      value,
+    );
+
+    setCurrentPage(
+      1,
+    );
+  };
+
+  const handleViewDetail = (
+    request: ITRequest,
+  ) => {
+    navigate(
+      `/it-request/${request.id}`,
+    );
+  };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <div
+        className={
+          styles.pageHeader
+        }
+      >
         <div>
-          <h1 className={styles.pageTitle}>
+          <h1
+            className={
+              styles.pageTitle
+            }
+          >
             IT Request Management
           </h1>
 
-          <p className={styles.pageDescription}>
-            Buat dan pantau Request, Change,
-            atau Incident.
+          <p
+            className={
+              styles.pageDescription
+            }
+          >
+            Buat dan pantau Request,
+            Change, atau Incident.
           </p>
         </div>
 
         <button
           type="button"
-          className={styles.createButton}
-          onClick={handleCreateRequest}
+          className={
+            styles.createButton
+          }
+          onClick={
+            handleCreateRequest
+          }
         >
           <span
-            className={styles.createIcon}
+            className={
+              styles.createIcon
+            }
             aria-hidden="true"
           >
             +
@@ -91,26 +190,48 @@ navigate(
         </button>
       </div>
 
-      <div className={styles.filterSection}>
+      <div
+        className={
+          styles.filterSection
+        }
+      >
         <ITRequestFilter
-          initialValue={appliedFilter}
-          onApply={handleApplyFilter}
+          initialValue={
+            appliedFilter
+          }
+          onApply={
+            handleApplyFilter
+          }
         />
       </div>
 
       <section
-        className={styles.tableSection}
+        className={
+          styles.tableSection
+        }
         aria-label="Daftar IT Request"
       >
         {itRequestsQuery.isLoading && (
-          <div className={styles.stateContainer}>
+          <div
+            className={
+              styles.stateContainer
+            }
+          >
             Memuat IT Request...
           </div>
         )}
 
         {itRequestsQuery.isError && (
-          <div className={styles.stateContainer}>
-            <p className={styles.errorMessage}>
+          <div
+            className={
+              styles.stateContainer
+            }
+          >
+            <p
+              className={
+                styles.errorMessage
+              }
+            >
               {getApiErrorMessage(
                 itRequestsQuery.error,
                 'IT Request gagal dimuat.',
@@ -119,7 +240,9 @@ navigate(
 
             <button
               type="button"
-              className={styles.retryButton}
+              className={
+                styles.retryButton
+              }
               onClick={() => {
                 itRequestsQuery.refetch();
               }}
@@ -135,27 +258,30 @@ navigate(
             <>
               <ITRequestTable
                 data={
-                  itRequestsQuery.data.data
+                  paginatedRequests
                 }
                 onViewDetail={
                   handleViewDetail
                 }
               />
 
-              <div
-                className={
-                  styles.resultInfo
+              <Pagination
+                currentPage={
+                  currentPage
                 }
-              >
-                Total{' '}
-                <strong>
-                  {
-                    itRequestsQuery.data
-                      .total
-                  }
-                </strong>{' '}
-                request
-              </div>
+                totalItems={
+                  requests.length
+                }
+                pageSize={
+                  pageSize
+                }
+                onPageChange={
+                  setCurrentPage
+                }
+                onPageSizeChange={
+                  handlePageSizeChange
+                }
+              />
             </>
           )}
       </section>

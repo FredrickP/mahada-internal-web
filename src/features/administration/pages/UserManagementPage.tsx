@@ -3,16 +3,26 @@ import {
   useState,
 } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+} from 'react-router-dom';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import Pagination, {
+  type PaginationPageSize,
+} from '../../../components/common/Pagination';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import {
   userRoleConfig,
   userStatusConfig,
 } from '../constants/administration-config';
 
-import { useUsers } from '../hooks/useUsers';
+import {
+  useUsers,
+} from '../hooks/useUsers';
 
 import {
   divisionOptions,
@@ -38,24 +48,43 @@ const initialFilter: UserFilter = {
 };
 
 function UserManagementPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const usersQuery =
     useUsers();
 
-  const [formFilter, setFormFilter] =
-    useState<UserFilter>(
-      initialFilter,
-    );
+  const [
+    formFilter,
+    setFormFilter,
+  ] = useState<UserFilter>(
+    initialFilter,
+  );
 
-  const [appliedFilter, setAppliedFilter] =
-    useState<UserFilter>(
-      initialFilter,
-    );
+  const [
+    appliedFilter,
+    setAppliedFilter,
+  ] = useState<UserFilter>(
+    initialFilter,
+  );
+
+  const [
+    currentPage,
+    setCurrentPage,
+  ] = useState(1);
+
+  const [
+    pageSize,
+    setPageSize,
+  ] = useState<PaginationPageSize>(
+    10,
+  );
 
   const filteredUsers =
     useMemo(() => {
-      if (!usersQuery.data) {
+      if (
+        !usersQuery.data
+      ) {
         return [];
       }
 
@@ -70,10 +99,14 @@ function UserManagementPage() {
             !keyword ||
             user.name
               .toLowerCase()
-              .includes(keyword) ||
+              .includes(
+                keyword,
+              ) ||
             user.email
               .toLowerCase()
-              .includes(keyword);
+              .includes(
+                keyword,
+              );
 
           const matchDivision =
             !appliedFilter.division ||
@@ -97,10 +130,52 @@ function UserManagementPage() {
       appliedFilter,
     ]);
 
+  const paginatedUsers =
+    useMemo(() => {
+      if (
+        pageSize === 'ALL'
+      ) {
+        return filteredUsers;
+      }
+
+      const startIndex =
+        (
+          currentPage -
+          1
+        ) *
+        pageSize;
+
+      return filteredUsers.slice(
+        startIndex,
+        startIndex +
+          pageSize,
+      );
+    }, [
+      filteredUsers,
+      currentPage,
+      pageSize,
+    ]);
+
   const handleFilter = () => {
     setAppliedFilter({
       ...formFilter,
     });
+
+    setCurrentPage(
+      1,
+    );
+  };
+
+  const handlePageSizeChange = (
+    value: PaginationPageSize,
+  ) => {
+    setPageSize(
+      value,
+    );
+
+    setCurrentPage(
+      1,
+    );
   };
 
   const handleCreateUser = () => {
@@ -117,9 +192,15 @@ function UserManagementPage() {
     );
   };
 
-  if (usersQuery.isLoading) {
+  if (
+    usersQuery.isLoading
+  ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         Memuat data pengguna...
       </div>
     );
@@ -130,7 +211,11 @@ function UserManagementPage() {
     !usersQuery.data
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         <p>
           {getApiErrorMessage(
             usersQuery.error,
@@ -140,7 +225,9 @@ function UserManagementPage() {
 
         <button
           type="button"
-          className={styles.retryButton}
+          className={
+            styles.retryButton
+          }
           onClick={() => {
             usersQuery.refetch();
           }}
@@ -152,8 +239,16 @@ function UserManagementPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <div>
           <h1>
             User Management
@@ -168,21 +263,39 @@ function UserManagementPage() {
 
         <button
           type="button"
-          className={styles.createButton}
-          onClick={handleCreateUser}
+          className={
+            styles.createButton
+          }
+          onClick={
+            handleCreateUser
+          }
         >
           + Tambah Pengguna
         </button>
       </header>
 
-      <section className={styles.filterCard}>
-        <div className={styles.filterGrid}>
+      <section
+        className={
+          styles.filterCard
+        }
+      >
+        <div
+          className={
+            styles.filterGrid
+          }
+        >
           <input
             type="text"
-            className={styles.searchInput}
+            className={
+              styles.searchInput
+            }
             placeholder="Cari nama atau email"
-            value={formFilter.keyword}
-            onChange={(event) => {
+            value={
+              formFilter.keyword
+            }
+            onChange={(
+              event,
+            ) => {
               setFormFilter(
                 (current) => ({
                   ...current,
@@ -191,9 +304,12 @@ function UserManagementPage() {
                 }),
               );
             }}
-            onKeyDown={(event) => {
+            onKeyDown={(
+              event,
+            ) => {
               if (
-                event.key === 'Enter'
+                event.key ===
+                'Enter'
               ) {
                 handleFilter();
               }
@@ -201,8 +317,12 @@ function UserManagementPage() {
           />
 
           <select
-            value={formFilter.division}
-            onChange={(event) => {
+            value={
+              formFilter.division
+            }
+            onChange={(
+              event,
+            ) => {
               setFormFilter(
                 (current) => ({
                   ...current,
@@ -219,8 +339,12 @@ function UserManagementPage() {
             {divisionOptions.map(
               (division) => (
                 <option
-                  key={division}
-                  value={division}
+                  key={
+                    division
+                  }
+                  value={
+                    division
+                  }
                 >
                   {division}
                 </option>
@@ -229,14 +353,20 @@ function UserManagementPage() {
           </select>
 
           <select
-            value={formFilter.role}
-            onChange={(event) => {
+            value={
+              formFilter.role
+            }
+            onChange={(
+              event,
+            ) => {
               setFormFilter(
                 (current) => ({
                   ...current,
                   role:
                     event.target
-                      .value as UserRole | '',
+                      .value as
+                      UserRole |
+                      '',
                 }),
               );
             }}
@@ -248,8 +378,12 @@ function UserManagementPage() {
             {roleOptions.map(
               (role) => (
                 <option
-                  key={role.value}
-                  value={role.value}
+                  key={
+                    role.value
+                  }
+                  value={
+                    role.value
+                  }
                 >
                   {role.label}
                 </option>
@@ -259,31 +393,67 @@ function UserManagementPage() {
 
           <button
             type="button"
-            className={styles.filterButton}
-            onClick={handleFilter}
+            className={
+              styles.filterButton
+            }
+            onClick={
+              handleFilter
+            }
           >
             Filter
           </button>
         </div>
       </section>
 
-      <section className={styles.tableSection}>
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+      <section
+        className={
+          styles.tableSection
+        }
+      >
+        <div
+          className={
+            styles.tableWrapper
+          }
+        >
+          <table
+            className={
+              styles.table
+            }
+          >
             <thead>
               <tr>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>Divisi</th>
-                <th>Jabatan</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Aksi</th>
+                <th>
+                  Nama
+                </th>
+
+                <th>
+                  Email
+                </th>
+
+                <th>
+                  Divisi
+                </th>
+
+                <th>
+                  Jabatan
+                </th>
+
+                <th>
+                  Role
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Aksi
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {filteredUsers.map(
+              {paginatedUsers.map(
                 (user) => {
                   const roleConfig =
                     userRoleConfig[
@@ -296,27 +466,39 @@ function UserManagementPage() {
                     ];
 
                   return (
-                    <tr key={user.id}>
+                    <tr
+                      key={
+                        user.id
+                      }
+                    >
                       <td>
                         <strong
                           className={
                             styles.userName
                           }
                         >
-                          {user.name}
+                          {
+                            user.name
+                          }
                         </strong>
                       </td>
 
                       <td>
-                        {user.email}
+                        {
+                          user.email
+                        }
                       </td>
 
                       <td>
-                        {user.division}
+                        {
+                          user.division
+                        }
                       </td>
 
                       <td>
-                        {user.position}
+                        {
+                          user.position
+                        }
                       </td>
 
                       <td>
@@ -329,8 +511,7 @@ function UserManagementPage() {
                           }
                         >
                           {
-                            roleConfig
-                              .label
+                            roleConfig.label
                           }
                         </span>
                       </td>
@@ -341,13 +522,11 @@ function UserManagementPage() {
                             styles.statusBadge
                           }
                           data-variant={
-                            statusConfig
-                              .variant
+                            statusConfig.variant
                           }
                         >
                           {
-                            statusConfig
-                              .label
+                            statusConfig.label
                           }
                         </span>
                       </td>
@@ -376,12 +555,37 @@ function UserManagementPage() {
 
           {filteredUsers.length ===
             0 && (
-            <div className={styles.emptyState}>
+            <div
+              className={
+                styles.emptyState
+              }
+            >
               Tidak ada pengguna yang
               sesuai dengan filter.
             </div>
           )}
         </div>
+
+        {filteredUsers.length >
+          0 && (
+          <Pagination
+            currentPage={
+              currentPage
+            }
+            totalItems={
+              filteredUsers.length
+            }
+            pageSize={
+              pageSize
+            }
+            onPageChange={
+              setCurrentPage
+            }
+            onPageSizeChange={
+              handlePageSizeChange
+            }
+          />
+        )}
       </section>
     </div>
   );
