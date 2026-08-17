@@ -1,5 +1,6 @@
 import type {
   BusinessTripDetail,
+  BusinessTripEvidenceType,
   BusinessTripStatus,
   CreateBusinessTripInput,
   CreateBusinessTripResponse,
@@ -13,6 +14,56 @@ const delay = (
   return new Promise((resolve) => {
     setTimeout(resolve, duration);
   });
+};
+
+const formatActionDate = (
+  date: Date,
+): string => {
+  const dateText =
+    new Intl.DateTimeFormat(
+      'id-ID',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      },
+    ).format(date);
+
+  const timeText =
+    new Intl.DateTimeFormat(
+      'id-ID',
+      {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      },
+    ).format(date);
+
+  return `${dateText} • ${timeText}`;
+};
+
+const getEvidenceFileType = (
+  file: File,
+): BusinessTripEvidenceType => {
+  if (
+    file.type.startsWith(
+      'image/',
+    )
+  ) {
+    return 'IMAGE';
+  }
+
+  if (
+    file.type ===
+      'application/pdf' ||
+    file.name
+      .toLowerCase()
+      .endsWith('.pdf')
+  ) {
+    return 'PDF';
+  }
+
+  return 'FILE';
 };
 
 let mockBusinessTripDetails: BusinessTripDetail[] = [
@@ -71,6 +122,8 @@ let mockBusinessTripDetails: BusinessTripDetail[] = [
         id: 'EVD001',
         fileName:
           'bukti-perjalanan-surabaya.pdf',
+        fileType:
+          'PDF',
         uploadedAt:
           '08 Agu 2026 • 10:20',
       },
@@ -150,7 +203,12 @@ const calculateTotalDays = (
   const totalDays =
     Math.floor(
       difference /
-        (1000 * 60 * 60 * 24),
+        (
+          1000 *
+          60 *
+          60 *
+          24
+        ),
     ) + 1;
 
   return Math.max(
@@ -207,6 +265,9 @@ export const createMockBusinessTrip = async (
       '0',
     )}`;
 
+  const now =
+    new Date();
+
   const newTrip: BusinessTripDetail = {
     id,
     requestNumber,
@@ -241,7 +302,9 @@ export const createMockBusinessTrip = async (
         label:
           'Diajukan',
         date:
-          '17 Agu 2026 • 14:40',
+          formatActionDate(
+            now,
+          ),
       },
       {
         id:
@@ -251,7 +314,9 @@ export const createMockBusinessTrip = async (
         label:
           'Menunggu Approval',
         date:
-          '17 Agu 2026 • 14:41',
+          formatActionDate(
+            now,
+          ),
       },
     ],
   };
@@ -305,7 +370,8 @@ export const updateMockBusinessTripStatus = async (
       (trip) => {
         return (
           trip.id === reference ||
-          trip.requestNumber === reference
+          trip.requestNumber ===
+            reference
         );
       },
     );
@@ -341,6 +407,9 @@ export const updateMockBusinessTripStatus = async (
     );
   }
 
+  const now =
+    new Date();
+
   const history =
     status === 'APPROVED'
       ? {
@@ -351,7 +420,9 @@ export const updateMockBusinessTripStatus = async (
           label:
             'Disetujui',
           date:
-            '17 Agu 2026 • 15:10',
+            formatActionDate(
+              now,
+            ),
           note:
             'Perjalanan dinas disetujui.',
         }
@@ -363,7 +434,9 @@ export const updateMockBusinessTripStatus = async (
           label:
             'Ditolak',
           date:
-            '17 Agu 2026 • 15:10',
+            formatActionDate(
+              now,
+            ),
           note:
             'Perjalanan dinas ditolak.',
         };
@@ -423,13 +496,27 @@ export const uploadMockBusinessTripEvidence = async (
     );
   }
 
+  const fileType =
+    getEvidenceFileType(
+      input.file,
+    );
+
+  const fileUrl =
+    URL.createObjectURL(
+      input.file,
+    );
+
   const evidence = {
     id:
       `EVD-${Date.now()}`,
     fileName:
       input.file.name,
+    fileUrl,
+    fileType,
     uploadedAt:
-      '17 Agu 2026 • 15:10',
+      formatActionDate(
+        new Date(),
+      ),
   };
 
   mockBusinessTripDetails[

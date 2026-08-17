@@ -5,6 +5,11 @@ export type BusinessTripStatus =
   | 'REJECTED'
   | 'COMPLETED';
 
+export type BusinessTripEvidenceType =
+  | 'IMAGE'
+  | 'PDF'
+  | 'FILE';
+
 export interface CreateBusinessTripInput {
   destination: string;
   purpose: string;
@@ -22,6 +27,8 @@ export interface CreateBusinessTripResponse {
 export interface BusinessTripEvidence {
   id: string;
   fileName: string;
+  fileUrl?: string;
+  fileType?: BusinessTripEvidenceType;
   uploadedAt: string;
 }
 

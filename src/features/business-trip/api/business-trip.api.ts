@@ -3,6 +3,10 @@ import {
 } from '../../../lib/api/api-client';
 
 import {
+  registerMockApproval,
+} from '../../approval/mocks/approval.mock';
+
+import {
   createMockBusinessTrip,
   getMockBusinessTripDetail,
   uploadMockBusinessTripEvidence,
@@ -19,13 +23,98 @@ import type {
 const useMock =
   import.meta.env.VITE_USE_MOCK === 'true';
 
+const formatApprovalDate = (
+  value: string,
+): string => {
+  const date =
+    new Date(
+      `${value}T00:00:00`,
+    );
+
+  return new Intl.DateTimeFormat(
+    'id-ID',
+    {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  ).format(date);
+};
+
+const calculateDurationDays = (
+  startDate: string,
+  endDate: string,
+): number => {
+  const start =
+    new Date(
+      `${startDate}T00:00:00`,
+    );
+
+  const end =
+    new Date(
+      `${endDate}T00:00:00`,
+    );
+
+  const difference =
+    end.getTime() -
+    start.getTime();
+
+  const millisecondsPerDay =
+    1000 * 60 * 60 * 24;
+
+  return (
+    Math.floor(
+      difference /
+        millisecondsPerDay,
+    ) + 1
+  );
+};
+
 export const createBusinessTrip = async (
   input: CreateBusinessTripInput,
 ): Promise<CreateBusinessTripResponse> => {
   if (useMock) {
-    return createMockBusinessTrip(
-      input,
-    );
+    const businessTripResponse =
+      await createMockBusinessTrip(
+        input,
+      );
+
+    await registerMockApproval({
+      submissionNumber:
+        businessTripResponse.requestNumber,
+      module:
+        'BUSINESS_TRIP',
+      title:
+        `Perjalanan Dinas ke ${input.destination}`,
+      requesterName:
+        'Fredrick Pardosi',
+      requesterDivision:
+        'Operation',
+      data: {
+        destinationCity:
+          input.destination,
+        departureDate:
+          formatApprovalDate(
+            input.startDate,
+          ),
+        returnDate:
+          formatApprovalDate(
+            input.endDate,
+          ),
+        durationDays:
+          calculateDurationDays(
+            input.startDate,
+            input.endDate,
+          ),
+        totalEstimate:
+          input.estimatedCost,
+        purpose:
+          input.purpose.trim(),
+      },
+      attachments: [],
+    });
+
+    return businessTripResponse;
   }
 
   const response =
