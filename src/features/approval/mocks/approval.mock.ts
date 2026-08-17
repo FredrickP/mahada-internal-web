@@ -22,12 +22,71 @@ import type {
   ApprovalStatus,
 } from '../types/approval.types';
 
+type ApprovalModule =
+  ApprovalDetail['module'];
+
+export type RegisterMockApprovalInput = {
+  [Module in ApprovalModule]: {
+    submissionNumber: string;
+    module: Module;
+    title: string;
+    requesterName: string;
+    requesterDivision: string;
+    data: Extract<
+      ApprovalDetail,
+      {
+        module: Module;
+      }
+    >['data'];
+    attachments?: ApprovalDetail['attachments'];
+  };
+}[ApprovalModule];
+
 const delay = (
   duration: number,
 ): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(resolve, duration);
   });
+};
+
+const formatSubmissionDate = (
+  date: Date,
+): string => {
+  return new Intl.DateTimeFormat(
+    'id-ID',
+    {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    },
+  ).format(date);
+};
+
+const formatActionDate = (
+  date: Date,
+): string => {
+  const dateText =
+    new Intl.DateTimeFormat(
+      'id-ID',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      },
+    ).format(date);
+
+  const timeText =
+    new Intl.DateTimeFormat(
+      'id-ID',
+      {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      },
+    ).format(date);
+
+  return `${dateText} • ${timeText}`;
 };
 
 let mockApprovals: ApprovalDetail[] = [
@@ -211,6 +270,125 @@ let mockApprovals: ApprovalDetail[] = [
   },
 ];
 
+const createRegisteredApproval = (
+  input: RegisterMockApprovalInput,
+  now: Date,
+): ApprovalDetail => {
+  const baseApproval = {
+    id:
+      `APR-${Date.now()}`,
+    submissionNumber:
+      input.submissionNumber,
+    title:
+      input.title,
+    requesterName:
+      input.requesterName,
+    requesterDivision:
+      input.requesterDivision,
+    submissionDate:
+      formatSubmissionDate(
+        now,
+      ),
+    status:
+      'WAITING_APPROVAL' as const,
+    attachments:
+      input.attachments ?? [],
+    history: [
+      {
+        id:
+          `HIS-SUBMIT-${Date.now()}`,
+        label:
+          'Diajukan',
+        actionBy:
+          input.requesterName,
+        actionDate:
+          formatActionDate(
+            now,
+          ),
+      },
+      {
+        id:
+          `HIS-WAIT-${Date.now()}`,
+        label:
+          'Menunggu Approval',
+        actionBy:
+          'System',
+        actionDate:
+          formatActionDate(
+            now,
+          ),
+      },
+    ],
+  };
+
+  switch (input.module) {
+    case 'LEAVE':
+      return {
+        ...baseApproval,
+        module: 'LEAVE',
+        data: input.data,
+      };
+
+    case 'PAYMENT':
+      return {
+        ...baseApproval,
+        module: 'PAYMENT',
+        data: input.data,
+      };
+
+    case 'IT_REQUEST':
+      return {
+        ...baseApproval,
+        module: 'IT_REQUEST',
+        data: input.data,
+      };
+
+    case 'BUSINESS_TRIP':
+      return {
+        ...baseApproval,
+        module: 'BUSINESS_TRIP',
+        data: input.data,
+      };
+  }
+};
+
+export const registerMockApproval = async (
+  input: RegisterMockApprovalInput,
+): Promise<ApprovalDetail> => {
+  await delay(300);
+
+  const existingApproval =
+    mockApprovals.find(
+      (approval) => {
+        return (
+          approval.submissionNumber ===
+          input.submissionNumber
+        );
+      },
+    );
+
+  if (existingApproval) {
+    return structuredClone(
+      existingApproval,
+    );
+  }
+
+  const approval =
+    createRegisteredApproval(
+      input,
+      new Date(),
+    );
+
+  mockApprovals = [
+    approval,
+    ...mockApprovals,
+  ];
+
+  return structuredClone(
+    approval,
+  );
+};
+
 export const getMockApprovalQueue = async (): Promise<
   ApprovalQueueItem[]
 > => {
@@ -385,9 +563,11 @@ export const processMockApproval = async (
         label:
           historyLabel,
         actionBy:
-          'Fredrick Pardosi',
+          'Demo Approver',
         actionDate:
-          '17 Agu 2026 • 15:20',
+          formatActionDate(
+            new Date(),
+          ),
         notes:
           input.notes.trim(),
       },

@@ -1,6 +1,10 @@
 import { apiClient } from '../../../lib/api/api-client';
 
 import {
+  registerMockApproval,
+} from '../../approval/mocks/approval.mock';
+
+import {
   createMockLeaveRequest,
   getMockHRServices,
   getMockLeaveDetail,
@@ -16,6 +20,24 @@ import type {
 
 const useMock =
   import.meta.env.VITE_USE_MOCK === 'true';
+
+const formatApprovalDate = (
+  value: string,
+): string => {
+  const date =
+    new Date(
+      `${value}T00:00:00`,
+    );
+
+  return new Intl.DateTimeFormat(
+    'id-ID',
+    {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  ).format(date);
+};
 
 export const getHRServices = async (): Promise<HRServicesData> => {
   if (useMock) {
@@ -51,10 +73,43 @@ export const createLeaveRequest = async (
   input: CreateLeaveRequestInput,
 ): Promise<LeaveRequestResponse> => {
   if (useMock) {
-    return createMockLeaveRequest(
-      input,
-      false,
-    );
+    const leaveResponse =
+      await createMockLeaveRequest(
+        input,
+        false,
+      );
+
+    await registerMockApproval({
+      submissionNumber:
+        leaveResponse.submissionNumber,
+      module:
+        'LEAVE',
+      title:
+        'Pengajuan Cuti Tahunan',
+      requesterName:
+        'Fredrick Pardosi',
+      requesterDivision:
+        'Operation',
+      data: {
+        leaveType:
+          'Cuti Tahunan',
+        startDate:
+          formatApprovalDate(
+            input.startDate,
+          ),
+        endDate:
+          formatApprovalDate(
+            input.endDate,
+          ),
+        workingDays:
+          input.workingDays,
+        reason:
+          input.reason.trim(),
+      },
+      attachments: [],
+    });
+
+    return leaveResponse;
   }
 
   const response =
