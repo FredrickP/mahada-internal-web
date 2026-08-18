@@ -548,35 +548,91 @@ function ApprovalDetailPage() {
             <div className={styles.divider} />
 
             <section className={styles.section}>
-              <h3>
-                Lampiran
-              </h3>
+  <h3>
+    Lampiran
+  </h3>
 
-              {approval.attachments.length ===
-              0 ? (
-                <div className={styles.emptyAttachment}>
-                  Tidak ada lampiran.
+  {approval.attachments.length ===
+  0 ? (
+    <div className={styles.emptyAttachment}>
+      Tidak ada lampiran.
+    </div>
+  ) : (
+    <div className={styles.attachmentList}>
+      {approval.attachments.map(
+        (attachment) => {
+          const hasFileUrl =
+            Boolean(
+              attachment.fileUrl &&
+                attachment.fileUrl !== '#',
+            );
+
+          if (!hasFileUrl) {
+            return (
+              <div
+                key={attachment.id}
+                className={
+                  styles.attachmentItem
+                }
+              >
+                <div>
+                  <strong>
+                    {attachment.fileName}
+                  </strong>
+
+                  <div
+                    style={{
+                      marginTop: '4px',
+                      color: '#94a3b8',
+                      fontSize: '12px',
+                      fontWeight: 400,
+                    }}
+                  >
+                    File tidak tersedia untuk dibuka
+                  </div>
                 </div>
-              ) : (
-                <div className={styles.attachmentList}>
-                  {approval.attachments.map(
-                    (attachment) => (
-                      <div
-                        key={attachment.id}
-                        className={
-                          styles.attachmentItem
-                        }
-                      >
-                        {
-                          attachment
-                            .fileName
-                        }
-                      </div>
-                    ),
-                  )}
+              </div>
+            );
+          }
+
+          return (
+            <a
+              key={attachment.id}
+              href={attachment.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={
+                styles.attachmentItem
+              }
+              style={{
+                color: 'inherit',
+                cursor: 'pointer',
+                textDecoration: 'none',
+              }}
+            >
+              <div>
+                <strong>
+                  {attachment.fileName}
+                </strong>
+
+                <div
+                  style={{
+                    marginTop: '4px',
+                    color: '#b7791f',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}
+                >
+                  Buka File
                 </div>
-              )}
-            </section>
+              </div>
+            </a>
+          );
+        },
+      )}
+    </div>
+  )}
+</section>
 
             <div className={styles.divider} />
 

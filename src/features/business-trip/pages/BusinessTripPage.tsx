@@ -38,6 +38,21 @@ import {
 
 import styles from './BusinessTripPage.module.css';
 
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
+};
+
 function BusinessTripPage() {
   const navigate =
     useNavigate();
@@ -96,28 +111,34 @@ function BusinessTripPage() {
     );
 
   const durationDays =
-    useMemo(() => {
-      return calculateTripDuration(
+    useMemo(
+      () => {
+        return calculateTripDuration(
+          departureDate,
+          returnDate,
+        );
+      },
+      [
         departureDate,
         returnDate,
-      );
-    }, [
-      departureDate,
-      returnDate,
-    ]);
+      ],
+    );
 
   const totalEstimate =
-    useMemo(() => {
-      return calculateTotalEstimate(
+    useMemo(
+      () => {
+        return calculateTotalEstimate(
+          transportationEstimate,
+          accommodationEstimate,
+          otherEstimate,
+        );
+      },
+      [
         transportationEstimate,
         accommodationEstimate,
         otherEstimate,
-      );
-    }, [
-      transportationEstimate,
-      accommodationEstimate,
-      otherEstimate,
-    ]);
+      ],
+    );
 
   const isProcessing =
     createMutation.isPending;
@@ -126,7 +147,8 @@ function BusinessTripPage() {
     createMutation.error;
 
   const handleSubmitTrip = (
-    values: CreateBusinessTripFormValues,
+    values:
+      CreateBusinessTripFormValues,
   ) => {
     createMutation.mutate(
       {
@@ -152,7 +174,11 @@ function BusinessTripPage() {
   };
 
   return (
-    <div className={styles.page}>
+    <div
+      className={
+        styles.page
+      }
+    >
       <header
         className={
           styles.pageHeader
@@ -178,9 +204,11 @@ function BusinessTripPage() {
           className={
             styles.formCard
           }
-          onSubmit={handleSubmit(
-            handleSubmitTrip,
-          )}
+          onSubmit={
+            handleSubmit(
+              handleSubmitTrip,
+            )
+          }
         >
           <h2>
             Informasi Perjalanan
@@ -200,6 +228,7 @@ function BusinessTripPage() {
                 htmlFor="destinationCity"
               >
                 Kota Tujuan
+                <RequiredMark />
               </label>
 
               <input
@@ -240,9 +269,11 @@ function BusinessTripPage() {
 
               <input
                 type="text"
-                value={formatTripDuration(
-                  durationDays,
-                )}
+                value={
+                  formatTripDuration(
+                    durationDays,
+                  )
+                }
                 readOnly
                 className={
                   styles.readOnlyInput
@@ -259,6 +290,7 @@ function BusinessTripPage() {
                 htmlFor="departureDate"
               >
                 Tanggal Berangkat
+                <RequiredMark />
               </label>
 
               <input
@@ -296,6 +328,7 @@ function BusinessTripPage() {
                 htmlFor="returnDate"
               >
                 Tanggal Kembali
+                <RequiredMark />
               </label>
 
               <input
@@ -337,7 +370,9 @@ function BusinessTripPage() {
 
               <Controller
                 name="transportationEstimate"
-                control={control}
+                control={
+                  control
+                }
                 render={({
                   field,
                 }) => (
@@ -400,7 +435,9 @@ function BusinessTripPage() {
 
               <Controller
                 name="accommodationEstimate"
-                control={control}
+                control={
+                  control
+                }
                 render={({
                   field,
                 }) => (
@@ -463,7 +500,9 @@ function BusinessTripPage() {
 
               <Controller
                 name="otherEstimate"
-                control={control}
+                control={
+                  control
+                }
                 render={({
                   field,
                 }) => (
@@ -548,6 +587,7 @@ function BusinessTripPage() {
               htmlFor="purpose"
             >
               Tujuan Perjalanan
+              <RequiredMark />
             </label>
 
             <textarea

@@ -5,6 +5,7 @@ import {
 
 import {
   ArrowLeft,
+  CheckCircle2,
   FileText,
   Upload,
   X,
@@ -16,11 +17,16 @@ import {
 } from 'react-router-dom';
 
 import {
+  useAuthStore,
+} from '../../auth/store/auth.store';
+
+import {
   getApiErrorMessage,
 } from '../../../lib/api/api-error';
 
 import {
   useBusinessTripDetail,
+  useCompleteBusinessTrip,
   useUploadBusinessTripEvidence,
 } from '../hooks/useBusinessTripDetail';
 
@@ -49,6 +55,12 @@ function BusinessTripDetailPage() {
     id: string;
   }>();
 
+  const user =
+    useAuthStore(
+      (state) =>
+        state.user,
+    );
+
   const fileInputRef =
     useRef<HTMLInputElement>(
       null,
@@ -68,6 +80,9 @@ function BusinessTripDetailPage() {
 
   const uploadMutation =
     useUploadBusinessTripEvidence();
+
+  const completeMutation =
+    useCompleteBusinessTrip();
 
   const handleBack = () => {
     navigate(
@@ -91,7 +106,9 @@ function BusinessTripDetailPage() {
   };
 
   const handleUpload = () => {
-    if (!selectedFile) {
+    if (
+      !selectedFile
+    ) {
       return;
     }
 
@@ -107,6 +124,12 @@ function BusinessTripDetailPage() {
           handleClearFile();
         },
       },
+    );
+  };
+
+  const handleComplete = () => {
+    completeMutation.mutate(
+      id,
     );
   };
 
@@ -156,16 +179,51 @@ function BusinessTripDetailPage() {
   const trip =
     tripQuery.data;
 
-  const canUploadEvidence =
-    trip.status === 'APPROVED' ||
-    trip.status === 'COMPLETED';
+  const isRegularUser =
+    Boolean(
+      user?.roles.includes(
+        'USER',
+      ) &&
+        !user.roles.includes(
+          'APPROVER',
+        ) &&
+        !user.roles.includes(
+          'PROCESSOR',
+        ) &&
+        !user.roles.includes(
+          'ADMIN',
+        ),
+    );
+
+  const isTripOwner =
+    Boolean(
+      user?.name &&
+        user.name ===
+          trip.employeeName,
+    );
+
+  const canManageEvidence =
+    isRegularUser &&
+    isTripOwner &&
+    trip.status ===
+      'APPROVED';
+
+  const canCompleteTrip =
+    canManageEvidence &&
+    trip.evidences.length >
+      0;
 
   const showEmptyEvidence =
-    trip.evidences.length === 0 &&
+    trip.evidences.length ===
+      0 &&
     !selectedFile;
 
   return (
-    <div className={styles.page}>
+    <div
+      className={
+        styles.page
+      }
+    >
       <button
         type="button"
         className={
@@ -369,7 +427,8 @@ function BusinessTripDetailPage() {
               Bukti Perjalanan
             </h2>
 
-            {trip.evidences.length > 0 && (
+            {trip.evidences.length >
+              0 && (
               <div
                 className={
                   styles.evidenceList
@@ -514,17 +573,17 @@ function BusinessTripDetailPage() {
 
                           {isPdf &&
                             evidence.fileUrl && (
-                              <span
-                                style={{
-                                  marginTop:
-                                    '4px',
-                                  color:
-                                    '#64748b',
-                                }}
-                              >
-                                Klik nama file untuk membuka PDF
-                              </span>
-                            )}
+                            <span
+                              style={{
+                                marginTop:
+                                  '4px',
+                                color:
+                                  '#64748b',
+                              }}
+                            >
+                              Klik nama file untuk membuka PDF
+                            </span>
+                          )}
                         </div>
                       </div>
                     );
@@ -543,33 +602,63 @@ function BusinessTripDetailPage() {
               </p>
             )}
 
-            {canUploadEvidence && (
+            {canManageEvidence && (
               <div
                 className={
                   styles.uploadArea
                 }
               >
-                <input
-                  ref={
-                    fileInputRef
-                  }
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  disabled={
-                    uploadMutation.isPending
-                  }
-                  onChange={(
-                    event,
-                  ) => {
-                    setSelectedFile(
-                      event.target
-                        .files?.[0] ??
-                        null,
-                    );
-
-                    uploadMutation.reset();
+                <div
+                  style={{
+                    display:
+                      'flex',
+                    alignItems:
+                      'center',
+                    gap:
+                      '10px',
                   }}
-                />
+                >
+                  <Upload
+                    size={18}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                    style={{
+                      flexShrink:
+                        0,
+                      color:
+                        '#64748b',
+                    }}
+                  />
+
+                  <input
+                    ref={
+                      fileInputRef
+                    }
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    disabled={
+                      uploadMutation.isPending ||
+                      completeMutation.isPending
+                    }
+                    onChange={(
+                      event,
+                    ) => {
+                      setSelectedFile(
+                        event.target
+                          .files?.[0] ??
+                          null,
+                      );
+
+                      uploadMutation.reset();
+                    }}
+                    style={{
+                      flex:
+                        1,
+                      minWidth:
+                        0,
+                    }}
+                  />
+                </div>
 
                 {selectedFile && (
                   <div
@@ -647,6 +736,187 @@ function BusinessTripDetailPage() {
                     )}
                   </div>
                 )}
+
+                {!canCompleteTrip && (
+                  <p
+                    style={{
+                      margin:
+                        '12px 0 0',
+                      color:
+                        '#64748b',
+                      fontSize:
+                        '13px',
+                      lineHeight:
+                        1.6,
+                    }}
+                  >
+                    Upload minimal satu bukti perjalanan sebelum menyelesaikan perjalanan.
+                  </p>
+                )}
+
+                {canCompleteTrip && (
+                  <div
+                    style={{
+                      marginTop:
+                        '18px',
+                      paddingTop:
+                        '18px',
+                      borderTop:
+                        '1px solid #e2e8f0',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display:
+                          'flex',
+                        alignItems:
+                          'center',
+                        justifyContent:
+                          'space-between',
+                        gap:
+                          '16px',
+                        flexWrap:
+                          'wrap',
+                      }}
+                    >
+                      <div>
+                        <strong
+                          style={{
+                            display:
+                              'block',
+                            color:
+                              '#0f172a',
+                            fontSize:
+                              '14px',
+                          }}
+                        >
+                          Bukti perjalanan sudah tersedia
+                        </strong>
+
+                        <span
+                          style={{
+                            display:
+                              'block',
+                            marginTop:
+                              '4px',
+                            color:
+                              '#64748b',
+                            fontSize:
+                              '13px',
+                          }}
+                        >
+                          Selesaikan perjalanan jika seluruh kegiatan sudah selesai.
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        disabled={
+                          completeMutation.isPending ||
+                          uploadMutation.isPending
+                        }
+                        onClick={
+                          handleComplete
+                        }
+                        style={{
+                          display:
+                            'inline-flex',
+                          alignItems:
+                            'center',
+                          justifyContent:
+                            'center',
+                          gap:
+                            '8px',
+                          minWidth:
+                            '190px',
+                          height:
+                            '42px',
+                          padding:
+                            '0 18px',
+                          border:
+                            0,
+                          borderRadius:
+                            '10px',
+                          background:
+                            '#15803d',
+                          color:
+                            '#ffffff',
+                          fontSize:
+                            '14px',
+                          fontWeight:
+                            700,
+                          cursor:
+                            completeMutation.isPending
+                              ? 'not-allowed'
+                              : 'pointer',
+                          opacity:
+                            completeMutation.isPending
+                              ? 0.65
+                              : 1,
+                        }}
+                      >
+                        <CheckCircle2
+                          size={17}
+                        />
+
+                        {completeMutation.isPending
+                          ? 'Menyelesaikan...'
+                          : 'Selesaikan Perjalanan'}
+                      </button>
+                    </div>
+
+                    {completeMutation.isError && (
+                      <div
+                        className={
+                          styles.errorMessage
+                        }
+                        style={{
+                          marginTop:
+                            '12px',
+                        }}
+                      >
+                        {getApiErrorMessage(
+                          completeMutation.error,
+                          'Perjalanan dinas gagal diselesaikan.',
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {trip.status ===
+              'COMPLETED' && (
+              <div
+                style={{
+                  display:
+                    'flex',
+                  alignItems:
+                    'center',
+                  gap:
+                    '8px',
+                  marginTop:
+                    '16px',
+                  padding:
+                    '12px 14px',
+                  borderRadius:
+                    '10px',
+                  background:
+                    '#f0fdf4',
+                  color:
+                    '#166534',
+                  fontSize:
+                    '13px',
+                  fontWeight:
+                    600,
+                }}
+              >
+                <CheckCircle2
+                  size={17}
+                />
+
+                Perjalanan dinas sudah selesai.
               </div>
             )}
           </section>

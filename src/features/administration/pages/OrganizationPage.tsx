@@ -10,7 +10,9 @@ import {
   Users,
 } from 'lucide-react';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import {
   useOrganization,
@@ -37,6 +39,21 @@ interface EditMappingState {
 const initialFilter: OrganizationFilter = {
   keyword: '',
   divisionId: '',
+};
+
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
 };
 
 function OrganizationPage() {
@@ -68,57 +85,77 @@ function OrganizationPage() {
   );
 
   const filteredMembers =
-    useMemo(() => {
-      if (!organizationQuery.data) {
-        return [];
-      }
+    useMemo(
+      () => {
+        if (
+          !organizationQuery.data
+        ) {
+          return [];
+        }
 
-      const keyword =
-        appliedFilter.keyword
-          .trim()
-          .toLowerCase();
+        const keyword =
+          appliedFilter.keyword
+            .trim()
+            .toLowerCase();
 
-      return organizationQuery.data.members.filter(
-        (member) => {
-          const matchesKeyword =
-            !keyword ||
-            member.name
-              .toLowerCase()
-              .includes(keyword) ||
-            member.email
-              .toLowerCase()
-              .includes(keyword);
+        return organizationQuery.data.members.filter(
+          (
+            member,
+          ) => {
+            const matchesKeyword =
+              !keyword ||
+              member.name
+                .toLowerCase()
+                .includes(
+                  keyword,
+                ) ||
+              member.email
+                .toLowerCase()
+                .includes(
+                  keyword,
+                );
 
-          const matchesDivision =
-            !appliedFilter.divisionId ||
-            member.divisionId ===
-              appliedFilter.divisionId;
+            const matchesDivision =
+              !appliedFilter.divisionId ||
+              member.divisionId ===
+                appliedFilter.divisionId;
 
-          return (
-            matchesKeyword &&
-            matchesDivision
-          );
-        },
-      );
-    }, [
-      appliedFilter,
-      organizationQuery.data,
-    ]);
+            return (
+              matchesKeyword &&
+              matchesDivision
+            );
+          },
+        );
+      },
+      [
+        appliedFilter,
+        organizationQuery.data,
+      ],
+    );
 
   const getManagerOptions = (
-    member: OrganizationMember,
-    divisionId: string,
+    member:
+      OrganizationMember,
+    divisionId:
+      string,
   ) => {
-    if (!organizationQuery.data) {
+    if (
+      !organizationQuery.data
+    ) {
       return [];
     }
 
     return organizationQuery.data.members.filter(
-      (candidate) => {
+      (
+        candidate,
+      ) => {
         return (
-          candidate.id !== member.id &&
-          candidate.status === 'ACTIVE' &&
-          candidate.divisionId === divisionId
+          candidate.id !==
+            member.id &&
+          candidate.status ===
+            'ACTIVE' &&
+          candidate.divisionId ===
+            divisionId
         );
       },
     );
@@ -141,16 +178,19 @@ function OrganizationPage() {
   };
 
   const handleStartEdit = (
-    member: OrganizationMember,
+    member:
+      OrganizationMember,
   ) => {
     updateMappingMutation.reset();
 
     setEditingMapping({
-      userId: member.id,
+      userId:
+        member.id,
       divisionId:
         member.divisionId,
       managerId:
-        member.managerId ?? '',
+        member.managerId ??
+        '',
     });
   };
 
@@ -163,29 +203,40 @@ function OrganizationPage() {
   };
 
   const handleDivisionChange = (
-    divisionId: string,
+    divisionId:
+      string,
   ) => {
     setEditingMapping(
-      (current) => {
-        if (!current) {
+      (
+        current,
+      ) => {
+        if (
+          !current
+        ) {
           return current;
         }
 
         return {
           ...current,
           divisionId,
-          managerId: '',
+          managerId:
+            '',
         };
       },
     );
   };
 
   const handleManagerChange = (
-    managerId: string,
+    managerId:
+      string,
   ) => {
     setEditingMapping(
-      (current) => {
-        if (!current) {
+      (
+        current,
+      ) => {
+        if (
+          !current
+        ) {
           return current;
         }
 
@@ -198,7 +249,9 @@ function OrganizationPage() {
   };
 
   const handleSaveMapping = () => {
-    if (!editingMapping) {
+    if (
+      !editingMapping
+    ) {
       return;
     }
 
@@ -226,7 +279,11 @@ function OrganizationPage() {
     organizationQuery.isLoading
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         Memuat struktur organisasi...
       </div>
     );
@@ -237,7 +294,11 @@ function OrganizationPage() {
     !organizationQuery.data
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         <p>
           {getApiErrorMessage(
             organizationQuery.error,
@@ -247,7 +308,9 @@ function OrganizationPage() {
 
         <button
           type="button"
-          className={styles.retryButton}
+          className={
+            styles.retryButton
+          }
           onClick={() => {
             organizationQuery.refetch();
           }}
@@ -261,11 +324,20 @@ function OrganizationPage() {
   const {
     summary,
     divisions,
-  } = organizationQuery.data;
+  } =
+    organizationQuery.data;
 
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <div>
           <h1>
             Struktur Organisasi
@@ -279,15 +351,27 @@ function OrganizationPage() {
         </div>
       </header>
 
-      <section className={styles.summaryGrid}>
-        <article className={styles.summaryCard}>
+      <section
+        className={
+          styles.summaryGrid
+        }
+      >
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="gold"
           >
             <Building2
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -297,19 +381,29 @@ function OrganizationPage() {
             </span>
 
             <strong>
-              {summary.totalDivisions}
+              {
+                summary.totalDivisions
+              }
             </strong>
           </div>
         </article>
 
-        <article className={styles.summaryCard}>
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="green"
           >
             <Users
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -319,19 +413,29 @@ function OrganizationPage() {
             </span>
 
             <strong>
-              {summary.totalEmployees}
+              {
+                summary.totalEmployees
+              }
             </strong>
           </div>
         </article>
 
-        <article className={styles.summaryCard}>
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="blue"
           >
             <UserRoundCheck
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -341,19 +445,29 @@ function OrganizationPage() {
             </span>
 
             <strong>
-              {summary.totalMappedManagers}
+              {
+                summary.totalMappedManagers
+              }
             </strong>
           </div>
         </article>
 
-        <article className={styles.summaryCard}>
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="orange"
           >
             <CheckCircle2
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -363,14 +477,24 @@ function OrganizationPage() {
             </span>
 
             <strong>
-              {summary.unmappedManagers}
+              {
+                summary.unmappedManagers
+              }
             </strong>
           </div>
         </article>
       </section>
 
-      <section className={styles.divisionSection}>
-        <div className={styles.sectionHeader}>
+      <section
+        className={
+          styles.divisionSection
+        }
+      >
+        <div
+          className={
+            styles.sectionHeader
+          }
+        >
           <div>
             <h2>
               Divisi
@@ -383,31 +507,59 @@ function OrganizationPage() {
           </div>
         </div>
 
-        <div className={styles.divisionGrid}>
+        <div
+          className={
+            styles.divisionGrid
+          }
+        >
           {divisions.map(
-            (division) => (
+            (
+              division,
+            ) => (
               <article
-                key={division.id}
-                className={styles.divisionCard}
+                key={
+                  division.id
+                }
+                className={
+                  styles.divisionCard
+                }
               >
-                <div className={styles.divisionCode}>
-                  {division.code}
+                <div
+                  className={
+                    styles.divisionCode
+                  }
+                >
+                  {
+                    division.code
+                  }
                 </div>
 
-                <div className={styles.divisionContent}>
+                <div
+                  className={
+                    styles.divisionContent
+                  }
+                >
                   <h3>
-                    {division.name}
+                    {
+                      division.name
+                    }
                   </h3>
 
                   <p>
                     Head:{' '}
                     <strong>
-                      {division.headName}
+                      {
+                        division.headName
+                      }
                     </strong>
                   </p>
                 </div>
 
-                <div className={styles.employeeCount}>
+                <div
+                  className={
+                    styles.employeeCount
+                  }
+                >
                   <strong>
                     {
                       division.totalEmployees
@@ -424,8 +576,16 @@ function OrganizationPage() {
         </div>
       </section>
 
-      <section className={styles.mappingSection}>
-        <div className={styles.sectionHeader}>
+      <section
+        className={
+          styles.mappingSection
+        }
+      >
+        <div
+          className={
+            styles.sectionHeader
+          }
+        >
           <div>
             <h2>
               Mapping Karyawan
@@ -438,24 +598,41 @@ function OrganizationPage() {
           </div>
         </div>
 
-        <div className={styles.filterCard}>
-          <div className={styles.filterGrid}>
+        <div
+          className={
+            styles.filterCard
+          }
+        >
+          <div
+            className={
+              styles.filterGrid
+            }
+          >
             <input
               type="text"
               placeholder="Cari nama atau email"
-              value={formFilter.keyword}
-              onChange={(event) => {
+              value={
+                formFilter.keyword
+              }
+              onChange={(
+                event,
+              ) => {
                 setFormFilter(
-                  (current) => ({
+                  (
+                    current,
+                  ) => ({
                     ...current,
                     keyword:
                       event.target.value,
                   }),
                 );
               }}
-              onKeyDown={(event) => {
+              onKeyDown={(
+                event,
+              ) => {
                 if (
-                  event.key === 'Enter'
+                  event.key ===
+                  'Enter'
                 ) {
                   handleFilter();
                 }
@@ -463,10 +640,16 @@ function OrganizationPage() {
             />
 
             <select
-              value={formFilter.divisionId}
-              onChange={(event) => {
+              value={
+                formFilter.divisionId
+              }
+              onChange={(
+                event,
+              ) => {
                 setFormFilter(
-                  (current) => ({
+                  (
+                    current,
+                  ) => ({
                     ...current,
                     divisionId:
                       event.target.value,
@@ -479,12 +662,20 @@ function OrganizationPage() {
               </option>
 
               {divisions.map(
-                (division) => (
+                (
+                  division,
+                ) => (
                   <option
-                    key={division.id}
-                    value={division.id}
+                    key={
+                      division.id
+                    }
+                    value={
+                      division.id
+                    }
                   >
-                    {division.name}
+                    {
+                      division.name
+                    }
                   </option>
                 ),
               )}
@@ -492,16 +683,24 @@ function OrganizationPage() {
 
             <button
               type="button"
-              className={styles.filterButton}
-              onClick={handleFilter}
+              className={
+                styles.filterButton
+              }
+              onClick={
+                handleFilter
+              }
             >
               Filter
             </button>
 
             <button
               type="button"
-              className={styles.resetButton}
-              onClick={handleResetFilter}
+              className={
+                styles.resetButton
+              }
+              onClick={
+                handleResetFilter
+              }
             >
               Reset
             </button>
@@ -509,7 +708,11 @@ function OrganizationPage() {
         </div>
 
         {updateMappingMutation.isError && (
-          <div className={styles.errorMessage}>
+          <div
+            className={
+              styles.errorMessage
+            }
+          >
             {getApiErrorMessage(
               updateMappingMutation.error,
               'Mapping organisasi gagal diperbarui.',
@@ -518,29 +721,62 @@ function OrganizationPage() {
         )}
 
         {updateMappingMutation.isSuccess && (
-          <div className={styles.successMessage}>
+          <div
+            className={
+              styles.successMessage
+            }
+          >
             {
-              updateMappingMutation.data.message
+              updateMappingMutation
+                .data.message
             }
           </div>
         )}
 
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+        <div
+          className={
+            styles.tableWrapper
+          }
+        >
+          <table
+            className={
+              styles.table
+            }
+          >
             <thead>
               <tr>
-                <th>Nama</th>
-                <th>Divisi</th>
-                <th>Jabatan</th>
-                <th>Atasan Langsung</th>
-                <th>Status</th>
-                <th>Aksi</th>
+                <th>
+                  Nama
+                </th>
+
+                <th>
+                  Divisi
+                  <RequiredMark />
+                </th>
+
+                <th>
+                  Jabatan
+                </th>
+
+                <th>
+                  Atasan Langsung
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Aksi
+                </th>
               </tr>
             </thead>
 
             <tbody>
               {filteredMembers.map(
-                (member) => {
+                (
+                  member,
+                ) => {
                   const isEditing =
                     editingMapping?.userId ===
                     member.id;
@@ -557,15 +793,27 @@ function OrganizationPage() {
                     );
 
                   return (
-                    <tr key={member.id}>
+                    <tr
+                      key={
+                        member.id
+                      }
+                    >
                       <td>
-                        <div className={styles.memberIdentity}>
+                        <div
+                          className={
+                            styles.memberIdentity
+                          }
+                        >
                           <strong>
-                            {member.name}
+                            {
+                              member.name
+                            }
                           </strong>
 
                           <span>
-                            {member.email}
+                            {
+                              member.email
+                            }
                           </span>
                         </div>
                       </td>
@@ -573,26 +821,38 @@ function OrganizationPage() {
                       <td>
                         {isEditing ? (
                           <select
-                            className={styles.tableSelect}
+                            className={
+                              styles.tableSelect
+                            }
                             value={
                               editingMapping.divisionId
                             }
                             disabled={
                               updateMappingMutation.isPending
                             }
-                            onChange={(event) => {
+                            onChange={(
+                              event,
+                            ) => {
                               handleDivisionChange(
                                 event.target.value,
                               );
                             }}
                           >
                             {divisions.map(
-                              (division) => (
+                              (
+                                division,
+                              ) => (
                                 <option
-                                  key={division.id}
-                                  value={division.id}
+                                  key={
+                                    division.id
+                                  }
+                                  value={
+                                    division.id
+                                  }
                                 >
-                                  {division.name}
+                                  {
+                                    division.name
+                                  }
                                 </option>
                               ),
                             )}
@@ -603,20 +863,26 @@ function OrganizationPage() {
                       </td>
 
                       <td>
-                        {member.position}
+                        {
+                          member.position
+                        }
                       </td>
 
                       <td>
                         {isEditing ? (
                           <select
-                            className={styles.tableSelect}
+                            className={
+                              styles.tableSelect
+                            }
                             value={
                               editingMapping.managerId
                             }
                             disabled={
                               updateMappingMutation.isPending
                             }
-                            onChange={(event) => {
+                            onChange={(
+                              event,
+                            ) => {
                               handleManagerChange(
                                 event.target.value,
                               );
@@ -627,18 +893,30 @@ function OrganizationPage() {
                             </option>
 
                             {managerOptions.map(
-                              (manager) => (
+                              (
+                                manager,
+                              ) => (
                                 <option
-                                  key={manager.id}
-                                  value={manager.id}
+                                  key={
+                                    manager.id
+                                  }
+                                  value={
+                                    manager.id
+                                  }
                                 >
-                                  {manager.name}
+                                  {
+                                    manager.name
+                                  }
                                 </option>
                               ),
                             )}
                           </select>
                         ) : (
-                          <div className={styles.managerInformation}>
+                          <div
+                            className={
+                              styles.managerInformation
+                            }
+                          >
                             <strong>
                               {
                                 member.managerName ??
@@ -659,10 +937,15 @@ function OrganizationPage() {
 
                       <td>
                         <span
-                          className={styles.statusBadge}
-                          data-status={member.status}
+                          className={
+                            styles.statusBadge
+                          }
+                          data-status={
+                            member.status
+                          }
                         >
-                          {member.status === 'ACTIVE'
+                          {member.status ===
+                          'ACTIVE'
                             ? 'Aktif'
                             : 'Nonaktif'}
                         </span>
@@ -670,10 +953,16 @@ function OrganizationPage() {
 
                       <td>
                         {isEditing ? (
-                          <div className={styles.rowActions}>
+                          <div
+                            className={
+                              styles.rowActions
+                            }
+                          >
                             <button
                               type="button"
-                              className={styles.cancelButton}
+                              className={
+                                styles.cancelButton
+                              }
                               disabled={
                                 updateMappingMutation.isPending
                               }
@@ -686,7 +975,9 @@ function OrganizationPage() {
 
                             <button
                               type="button"
-                              className={styles.saveButton}
+                              className={
+                                styles.saveButton
+                              }
                               disabled={
                                 updateMappingMutation.isPending
                               }
@@ -702,7 +993,9 @@ function OrganizationPage() {
                         ) : (
                           <button
                             type="button"
-                            className={styles.editButton}
+                            className={
+                              styles.editButton
+                            }
                             onClick={() => {
                               handleStartEdit(
                                 member,
@@ -720,8 +1013,13 @@ function OrganizationPage() {
             </tbody>
           </table>
 
-          {filteredMembers.length === 0 && (
-            <div className={styles.emptyState}>
+          {filteredMembers.length ===
+            0 && (
+            <div
+              className={
+                styles.emptyState
+              }
+            >
               Tidak ada karyawan yang
               sesuai dengan filter.
             </div>

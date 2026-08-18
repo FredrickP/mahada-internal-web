@@ -1,16 +1,36 @@
-import { useMemo } from 'react';
+import {
+  useMemo,
+} from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import {
+  zodResolver,
+} from '@hookform/resolvers/zod';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
-import { useCreateLeaveRequest } from '../hooks/useCreateLeaveRequest';
-import { useHRServices } from '../hooks/useHRServices';
+import {
+  useForm,
+} from 'react-hook-form';
+
+import {
+  useNavigate,
+} from 'react-router-dom';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
+
+import {
+  useCreateLeaveRequest,
+} from '../hooks/useCreateLeaveRequest';
+
+import {
+  useHRServices,
+} from '../hooks/useHRServices';
+
 import {
   createLeaveSchema,
   type CreateLeaveFormValues,
 } from '../schemas/create-leave.schema';
+
 import {
   calculateWorkingDays,
   formatWorkingDays,
@@ -18,10 +38,27 @@ import {
 
 import styles from './LeaveRequestPage.module.css';
 
-function LeaveRequestPage() {
-  const navigate = useNavigate();
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
+};
 
-  const hrServicesQuery = useHRServices();
+function LeaveRequestPage() {
+  const navigate =
+    useNavigate();
+
+  const hrServicesQuery =
+    useHRServices();
 
   const {
     createMutation,
@@ -38,9 +75,10 @@ function LeaveRequestPage() {
       errors,
     },
   } = useForm<CreateLeaveFormValues>({
-    resolver: zodResolver(
-      createLeaveSchema,
-    ),
+    resolver:
+      zodResolver(
+        createLeaveSchema,
+      ),
     defaultValues: {
       startDate: '',
       endDate: '',
@@ -48,23 +86,29 @@ function LeaveRequestPage() {
     },
   });
 
-  const startDate = watch(
-    'startDate',
-  );
-
-  const endDate = watch(
-    'endDate',
-  );
-
-  const workingDays = useMemo(() => {
-    return calculateWorkingDays(
-      startDate,
-      endDate,
+  const startDate =
+    watch(
+      'startDate',
     );
-  }, [
-    startDate,
-    endDate,
-  ]);
+
+  const endDate =
+    watch(
+      'endDate',
+    );
+
+  const workingDays =
+    useMemo(
+      () => {
+        return calculateWorkingDays(
+          startDate,
+          endDate,
+        );
+      },
+      [
+        startDate,
+        endDate,
+      ],
+    );
 
   const remainingDays =
     hrServicesQuery.data
@@ -88,74 +132,82 @@ function LeaveRequestPage() {
     createMutation.error ??
     saveDraftMutation.error;
 
-  const validateLeaveBalance = () => {
-    if (!startDate || !endDate) {
+  const validateLeaveBalance =
+    () => {
+      if (
+        !startDate ||
+        !endDate
+      ) {
+        return true;
+      }
+
+      if (
+        workingDays <= 0
+      ) {
+        setError(
+          'endDate',
+          {
+            message:
+              'Periode cuti tidak memiliki hari kerja',
+          },
+        );
+
+        return false;
+      }
+
+      if (
+        workingDays >
+        remainingDays
+      ) {
+        setError(
+          'endDate',
+          {
+            message:
+              'Jumlah hari cuti melebihi sisa cuti',
+          },
+        );
+
+        return false;
+      }
+
       return true;
-    }
+    };
 
-    if (workingDays <= 0) {
-      setError(
-        'endDate',
+  const handleSaveDraft =
+    () => {
+      const values =
+        getValues();
+
+      saveDraftMutation.mutate(
         {
-          message:
-            'Periode cuti tidak memiliki hari kerja',
+          startDate:
+            values.startDate ||
+            undefined,
+          endDate:
+            values.endDate ||
+            undefined,
+          workingDays:
+            workingDays > 0
+              ? workingDays
+              : undefined,
+          reason:
+            values.reason ||
+            undefined,
+          approverName,
+        },
+        {
+          onSuccess: () => {
+            navigate(
+              '/hr-services',
+            );
+          },
         },
       );
-
-      return false;
-    }
-
-    if (
-      workingDays >
-      remainingDays
-    ) {
-      setError(
-        'endDate',
-        {
-          message:
-            'Jumlah hari cuti melebihi sisa cuti',
-        },
-      );
-
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSaveDraft = () => {
-    const values =
-      getValues();
-
-    saveDraftMutation.mutate(
-      {
-        startDate:
-          values.startDate ||
-          undefined,
-        endDate:
-          values.endDate ||
-          undefined,
-        workingDays:
-          workingDays > 0
-            ? workingDays
-            : undefined,
-        reason:
-          values.reason ||
-          undefined,
-        approverName,
-      },
-      {
-        onSuccess: () => {
-          navigate(
-            '/hr-services',
-          );
-        },
-      },
-    );
-  };
+    };
 
   const handleSubmitLeave = (
-    values: CreateLeaveFormValues,
+    values:
+      CreateLeaveFormValues,
   ) => {
     if (
       !validateLeaveBalance()
@@ -231,7 +283,11 @@ function LeaveRequestPage() {
   }
 
   return (
-    <div className={styles.page}>
+    <div
+      className={
+        styles.page
+      }
+    >
       <header
         className={
           styles.pageHeader
@@ -257,9 +313,11 @@ function LeaveRequestPage() {
           className={
             styles.formCard
           }
-          onSubmit={handleSubmit(
-            handleSubmitLeave,
-          )}
+          onSubmit={
+            handleSubmit(
+              handleSubmitLeave,
+            )
+          }
         >
           <h2>
             Detail Pengajuan
@@ -317,6 +375,7 @@ function LeaveRequestPage() {
                 htmlFor="startDate"
               >
                 Tanggal Mulai
+                <RequiredMark />
               </label>
 
               <input
@@ -354,6 +413,7 @@ function LeaveRequestPage() {
                 htmlFor="endDate"
               >
                 Tanggal Selesai
+                <RequiredMark />
               </label>
 
               <input
@@ -393,9 +453,11 @@ function LeaveRequestPage() {
 
               <input
                 type="text"
-                value={formatWorkingDays(
-                  workingDays,
-                )}
+                value={
+                  formatWorkingDays(
+                    workingDays,
+                  )
+                }
                 readOnly
                 className={
                   styles.readOnlyInput
@@ -434,6 +496,7 @@ function LeaveRequestPage() {
               htmlFor="reason"
             >
               Alasan Cuti
+              <RequiredMark />
             </label>
 
             <textarea

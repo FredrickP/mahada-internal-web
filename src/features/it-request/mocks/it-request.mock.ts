@@ -88,6 +88,32 @@ let mockITRequestDetails: Record<
   },
 };
 
+const formatActionDate = (
+  date: Date,
+): string => {
+  const dateText =
+    new Intl.DateTimeFormat(
+      'id-ID',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      },
+    ).format(date);
+
+  const timeText =
+    new Intl.DateTimeFormat(
+      'id-ID',
+      {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      },
+    ).format(date);
+
+  return `${dateText} ${timeText}`;
+};
+
 export const getMockITRequests = async (
   filter?: ITRequestFilter,
 ): Promise<ITRequest[]> => {
@@ -309,6 +335,11 @@ export const createMockITRequest = async (
       submittedInput.priority,
     attachmentCount:
       submittedInput.attachments.length,
+    picName:
+      submittedInput.type ===
+      'INCIDENT'
+        ? 'IT Team'
+        : undefined,
   };
 
   const attachments: ITRequestDetail['attachments'] =
@@ -341,7 +372,9 @@ export const createMockITRequest = async (
       actionBy:
         'Fredrick Pardosi',
       actionDate:
-        '17 Agu 2026 15:00',
+        formatActionDate(
+          new Date(),
+        ),
       notes:
         submittedInput.type ===
         'INCIDENT'
@@ -362,7 +395,9 @@ export const createMockITRequest = async (
       actionBy:
         'IT Team',
       actionDate:
-        '17 Agu 2026 15:01',
+        formatActionDate(
+          new Date(),
+        ),
       notes:
         'Incident langsung diteruskan ke proses IT tanpa approval.',
     });
@@ -484,14 +519,132 @@ export const updateMockITRequestApprovalStatus = async (
             `HIS-${Date.now()}`,
           status,
           actionBy:
-            'Fredrick Pardosi',
+            'Demo Approver',
           actionDate:
-            '17 Agu 2026 15:20',
+            formatActionDate(
+              new Date(),
+            ),
           notes:
             status ===
             'APPROVED'
               ? 'IT Request disetujui.'
               : 'IT Request ditolak.',
+        },
+      ],
+    },
+  };
+
+  return structuredClone(
+    updatedRequest,
+  );
+};
+
+export const updateMockITRequestProcessorStatus = async (
+  reference: string,
+  status: Extract<
+    ITRequest['status'],
+    'IN_PROGRESS' | 'COMPLETED'
+  >,
+): Promise<ITRequest> => {
+  await delay(500);
+
+  const requestIndex =
+    mockITRequests.findIndex(
+      (request) => {
+        return (
+          request.id === reference ||
+          request.requestNumber ===
+            reference
+        );
+      },
+    );
+
+  if (
+    requestIndex < 0
+  ) {
+    throw new Error(
+      'IT Request tidak ditemukan',
+    );
+  }
+
+  const request =
+    mockITRequests[
+      requestIndex
+    ];
+
+  if (
+    status === 'IN_PROGRESS' &&
+    request.status !== 'APPROVED'
+  ) {
+    throw new Error(
+      'Hanya IT Request yang sudah disetujui yang dapat mulai diproses',
+    );
+  }
+
+  if (
+    status === 'COMPLETED' &&
+    request.status !== 'IN_PROGRESS'
+  ) {
+    throw new Error(
+      'Hanya IT Request yang sedang diproses yang dapat diselesaikan',
+    );
+  }
+
+  const updatedRequest: ITRequest = {
+    ...request,
+    status,
+    picName:
+      'Demo Processor',
+  };
+
+  mockITRequests[
+    requestIndex
+  ] = updatedRequest;
+
+  const existingDetail =
+    mockITRequestDetails[
+      request.id
+    ];
+
+  const existingHistory =
+    existingDetail?.history ??
+    [
+      {
+        id:
+          `HIS-${request.id}-001`,
+        status:
+          request.status,
+        actionBy:
+          request.picName ??
+          'System',
+        actionDate:
+          request.submissionDate,
+      },
+    ];
+
+  mockITRequestDetails = {
+    ...mockITRequestDetails,
+    [request.id]: {
+      attachments:
+        existingDetail?.attachments ??
+        [],
+      history: [
+        ...existingHistory,
+        {
+          id:
+            `HIS-${Date.now()}`,
+          status,
+          actionBy:
+            'Demo Processor',
+          actionDate:
+            formatActionDate(
+              new Date(),
+            ),
+          notes:
+            status ===
+            'IN_PROGRESS'
+              ? 'IT Request mulai diproses oleh tim IT.'
+              : 'IT Request telah selesai diproses.',
         },
       ],
     },

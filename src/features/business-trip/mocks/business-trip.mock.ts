@@ -488,11 +488,10 @@ export const uploadMockBusinessTripEvidence = async (
     ];
 
   if (
-    trip.status !== 'APPROVED' &&
-    trip.status !== 'COMPLETED'
+    trip.status !== 'APPROVED'
   ) {
     throw new Error(
-      'Bukti perjalanan hanya dapat diunggah setelah perjalanan disetujui',
+      'Bukti perjalanan hanya dapat diunggah pada perjalanan yang sudah disetujui',
     );
   }
 
@@ -506,6 +505,9 @@ export const uploadMockBusinessTripEvidence = async (
       input.file,
     );
 
+  const now =
+    new Date();
+
   const evidence = {
     id:
       `EVD-${Date.now()}`,
@@ -515,8 +517,23 @@ export const uploadMockBusinessTripEvidence = async (
     fileType,
     uploadedAt:
       formatActionDate(
-        new Date(),
+        now,
       ),
+  };
+
+  const evidenceHistory = {
+    id:
+      `HIS-EVIDENCE-${Date.now()}`,
+    status:
+      'APPROVED' as const,
+    label:
+      'Bukti Perjalanan Diunggah',
+    date:
+      formatActionDate(
+        now,
+      ),
+    note:
+      `${input.file.name} berhasil diunggah.`,
   };
 
   mockBusinessTripDetails[
@@ -527,6 +544,10 @@ export const uploadMockBusinessTripEvidence = async (
       ...trip.evidences,
       evidence,
     ],
+    history: [
+      ...trip.history,
+      evidenceHistory,
+    ],
   };
 
   return {
@@ -536,6 +557,86 @@ export const uploadMockBusinessTripEvidence = async (
     message:
       'Bukti perjalanan berhasil diunggah',
   };
+};
+
+export const completeMockBusinessTrip = async (
+  reference: string,
+): Promise<BusinessTripDetail> => {
+  await delay(500);
+
+  const tripIndex =
+    mockBusinessTripDetails.findIndex(
+      (trip) => {
+        return (
+          trip.id === reference ||
+          trip.requestNumber ===
+            reference
+        );
+      },
+    );
+
+  if (
+    tripIndex < 0
+  ) {
+    throw new Error(
+      'Data perjalanan dinas tidak ditemukan',
+    );
+  }
+
+  const trip =
+    mockBusinessTripDetails[
+      tripIndex
+    ];
+
+  if (
+    trip.status !== 'APPROVED'
+  ) {
+    throw new Error(
+      'Hanya perjalanan yang sudah disetujui yang dapat diselesaikan',
+    );
+  }
+
+  if (
+    trip.evidences.length === 0
+  ) {
+    throw new Error(
+      'Upload minimal satu bukti perjalanan sebelum menyelesaikan perjalanan',
+    );
+  }
+
+  const now =
+    new Date();
+
+  const updatedTrip: BusinessTripDetail = {
+    ...trip,
+    status:
+      'COMPLETED',
+    history: [
+      ...trip.history,
+      {
+        id:
+          `HIS-COMPLETED-${Date.now()}`,
+        status:
+          'COMPLETED',
+        label:
+          'Selesai',
+        date:
+          formatActionDate(
+            now,
+          ),
+        note:
+          'Perjalanan dinas telah diselesaikan oleh pengaju.',
+      },
+    ],
+  };
+
+  mockBusinessTripDetails[
+    tripIndex
+  ] = updatedTrip;
+
+  return structuredClone(
+    updatedTrip,
+  );
 };
 
 export const getMockBusinessTrips = (): BusinessTripDetail[] => {

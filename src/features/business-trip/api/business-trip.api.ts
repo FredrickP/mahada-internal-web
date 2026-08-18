@@ -7,6 +7,7 @@ import {
 } from '../../approval/mocks/approval.mock';
 
 import {
+  completeMockBusinessTrip,
   createMockBusinessTrip,
   getMockBusinessTripDetail,
   uploadMockBusinessTripEvidence,
@@ -60,7 +61,10 @@ const calculateDurationDays = (
     start.getTime();
 
   const millisecondsPerDay =
-    1000 * 60 * 60 * 24;
+    1000 *
+    60 *
+    60 *
+    24;
 
   return (
     Math.floor(
@@ -73,7 +77,9 @@ const calculateDurationDays = (
 export const createBusinessTrip = async (
   input: CreateBusinessTripInput,
 ): Promise<CreateBusinessTripResponse> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     const businessTripResponse =
       await createMockBusinessTrip(
         input,
@@ -129,7 +135,9 @@ export const createBusinessTrip = async (
 export const getBusinessTripDetail = async (
   id: string,
 ): Promise<BusinessTripDetail> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     return getMockBusinessTripDetail(
       id,
     );
@@ -146,7 +154,9 @@ export const getBusinessTripDetail = async (
 export const uploadBusinessTripEvidence = async (
   input: UploadBusinessTripEvidenceInput,
 ): Promise<UploadBusinessTripEvidenceResponse> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     return uploadMockBusinessTripEvidence(
       input,
     );
@@ -169,6 +179,29 @@ export const uploadBusinessTripEvidence = async (
           'Content-Type':
             'multipart/form-data',
         },
+      },
+    );
+
+  return response.data;
+};
+
+export const completeBusinessTrip = async (
+  id: string,
+): Promise<BusinessTripDetail> => {
+  if (
+    useMock
+  ) {
+    return completeMockBusinessTrip(
+      id,
+    );
+  }
+
+  const response =
+    await apiClient.put<BusinessTripDetail>(
+      `/business-trips/${id}/status`,
+      {
+        status:
+          'COMPLETED',
       },
     );
 

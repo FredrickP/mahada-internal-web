@@ -6,7 +6,9 @@ import {
   Percent,
 } from 'lucide-react';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import {
   useTaxConfiguration,
@@ -24,6 +26,21 @@ interface EditTaxState {
   rate: string;
   isActive: boolean;
 }
+
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
+};
 
 function TaxConfigurationPage() {
   const taxQuery =
@@ -72,7 +89,9 @@ function TaxConfigurationPage() {
   };
 
   const handleSave = () => {
-    if (!editingTax) {
+    if (
+      !editingTax
+    ) {
       return;
     }
 
@@ -82,8 +101,11 @@ function TaxConfigurationPage() {
       );
 
     if (
-      editingTax.rate.trim() === '' ||
-      Number.isNaN(rate)
+      editingTax.rate.trim() ===
+        '' ||
+      Number.isNaN(
+        rate,
+      )
     ) {
       setValidationError(
         'Tarif pajak wajib diisi.',
@@ -127,7 +149,11 @@ function TaxConfigurationPage() {
     taxQuery.isLoading
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         Memuat konfigurasi pajak...
       </div>
     );
@@ -138,7 +164,11 @@ function TaxConfigurationPage() {
     !taxQuery.data
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         <p>
           {getApiErrorMessage(
             taxQuery.error,
@@ -148,7 +178,9 @@ function TaxConfigurationPage() {
 
         <button
           type="button"
-          className={styles.retryButton}
+          className={
+            styles.retryButton
+          }
           onClick={() => {
             taxQuery.refetch();
           }}
@@ -160,8 +192,16 @@ function TaxConfigurationPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <h1>
           Konfigurasi Pajak
         </h1>
@@ -173,15 +213,27 @@ function TaxConfigurationPage() {
       </header>
 
       {updateMutation.isSuccess && (
-        <div className={styles.successMessage}>
+        <div
+          className={
+            styles.successMessage
+          }
+        >
           {
             updateMutation.data.message
           }
         </div>
       )}
 
-      <section className={styles.configurationSection}>
-        <div className={styles.sectionHeader}>
+      <section
+        className={
+          styles.configurationSection
+        }
+      >
+        <div
+          className={
+            styles.sectionHeader
+          }
+        >
           <h2>
             Tarif Pajak
           </h2>
@@ -192,29 +244,53 @@ function TaxConfigurationPage() {
           </p>
         </div>
 
-        <div className={styles.taxList}>
+        <div
+          className={
+            styles.taxList
+          }
+        >
           {taxQuery.data.configurations.map(
-            (tax) => {
+            (
+              tax,
+            ) => {
               const isEditing =
                 editingTax?.id ===
                 tax.id;
 
               return (
                 <article
-                  key={tax.id}
-                  className={styles.taxCard}
+                  key={
+                    tax.id
+                  }
+                  className={
+                    styles.taxCard
+                  }
                 >
-                  <div className={styles.taxIcon}>
+                  <div
+                    className={
+                      styles.taxIcon
+                    }
+                  >
                     <Percent
                       size={19}
                       strokeWidth={1.8}
                     />
                   </div>
 
-                  <div className={styles.taxInformation}>
-                    <div className={styles.taxTitle}>
+                  <div
+                    className={
+                      styles.taxInformation
+                    }
+                  >
+                    <div
+                      className={
+                        styles.taxTitle
+                      }
+                    >
                       <h3>
-                        {tax.name}
+                        {
+                          tax.name
+                        }
                       </h3>
 
                       <span
@@ -233,49 +309,96 @@ function TaxConfigurationPage() {
                     </div>
 
                     <p>
-                      {tax.description}
+                      {
+                        tax.description
+                      }
                     </p>
                   </div>
 
                   {isEditing ? (
-                    <div className={styles.editArea}>
-                      <div className={styles.rateInput}>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="0.01"
-                          value={editingTax.rate}
-                          disabled={
-                            updateMutation.isPending
-                          }
-                          onChange={(event) => {
-                            setEditingTax(
-                              (current) => {
-                                if (!current) {
-                                  return current;
-                                }
-
-                                return {
-                                  ...current,
-                                  rate:
-                                    event.target.value,
-                                };
-                              },
-                            );
-
-                            setValidationError(
-                              '',
-                            );
+                    <div
+                      className={
+                        styles.editArea
+                      }
+                    >
+                      <div
+                        style={{
+                          display:
+                            'flex',
+                          flexDirection:
+                            'column',
+                          gap:
+                            '6px',
+                        }}
+                      >
+                        <label
+                          style={{
+                            color:
+                              '#334155',
+                            fontSize:
+                              '13px',
+                            fontWeight:
+                              600,
                           }}
-                        />
+                        >
+                          Tarif Pajak
+                          <RequiredMark />
+                        </label>
 
-                        <span>
-                          %
-                        </span>
+                        <div
+                          className={
+                            styles.rateInput
+                          }
+                        >
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            value={
+                              editingTax.rate
+                            }
+                            disabled={
+                              updateMutation.isPending
+                            }
+                            onChange={(
+                              event,
+                            ) => {
+                              setEditingTax(
+                                (
+                                  current,
+                                ) => {
+                                  if (
+                                    !current
+                                  ) {
+                                    return current;
+                                  }
+
+                                  return {
+                                    ...current,
+                                    rate:
+                                      event.target.value,
+                                  };
+                                },
+                              );
+
+                              setValidationError(
+                                '',
+                              );
+                            }}
+                          />
+
+                          <span>
+                            %
+                          </span>
+                        </div>
                       </div>
 
-                      <label className={styles.statusToggle}>
+                      <label
+                        className={
+                          styles.statusToggle
+                        }
+                      >
                         <input
                           type="checkbox"
                           checked={
@@ -284,10 +407,16 @@ function TaxConfigurationPage() {
                           disabled={
                             updateMutation.isPending
                           }
-                          onChange={(event) => {
+                          onChange={(
+                            event,
+                          ) => {
                             setEditingTax(
-                              (current) => {
-                                if (!current) {
+                              (
+                                current,
+                              ) => {
+                                if (
+                                  !current
+                                ) {
                                   return current;
                                 }
 
@@ -306,10 +435,16 @@ function TaxConfigurationPage() {
                         </span>
                       </label>
 
-                      <div className={styles.actions}>
+                      <div
+                        className={
+                          styles.actions
+                        }
+                      >
                         <button
                           type="button"
-                          className={styles.cancelButton}
+                          className={
+                            styles.cancelButton
+                          }
                           disabled={
                             updateMutation.isPending
                           }
@@ -322,7 +457,9 @@ function TaxConfigurationPage() {
 
                         <button
                           type="button"
-                          className={styles.saveButton}
+                          className={
+                            styles.saveButton
+                          }
                           disabled={
                             updateMutation.isPending
                           }
@@ -337,9 +474,16 @@ function TaxConfigurationPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className={styles.taxValue}>
+                    <div
+                      className={
+                        styles.taxValue
+                      }
+                    >
                       <strong>
-                        {tax.rate}%
+                        {
+                          tax.rate
+                        }
+                        %
                       </strong>
 
                       <button
@@ -361,13 +505,23 @@ function TaxConfigurationPage() {
         </div>
 
         {validationError && (
-          <div className={styles.errorMessage}>
-            {validationError}
+          <div
+            className={
+              styles.errorMessage
+            }
+          >
+            {
+              validationError
+            }
           </div>
         )}
 
         {updateMutation.isError && (
-          <div className={styles.errorMessage}>
+          <div
+            className={
+              styles.errorMessage
+            }
+          >
             {getApiErrorMessage(
               updateMutation.error,
               'Konfigurasi pajak gagal diperbarui.',

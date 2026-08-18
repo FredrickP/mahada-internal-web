@@ -29,7 +29,10 @@ const mockAccounts: MockAccount[] = [
       name: 'Demo Approver',
       username: 'approver',
       email: 'approver@mahadafinance.co.id',
-      roles: ['USER', 'APPROVER'],
+      roles: [
+        'USER',
+        'APPROVER',
+      ],
       division: 'OPERATION',
       position: 'Operation Manager',
     },
@@ -42,10 +45,16 @@ const mockAccounts: MockAccount[] = [
       name: 'Demo Processor',
       username: 'processor',
       email: 'processor@mahadafinance.co.id',
-      roles: ['USER', 'PROCESSOR'],
+      roles: [
+        'USER',
+        'PROCESSOR',
+      ],
       division: 'IT',
       position: 'IT Staff',
-      processorModules: ['IT_REQUEST'],
+      processorModules: [
+        'IT_REQUEST',
+        'PAYMENT',
+      ],
     },
     password: 'Demo123!',
   },
@@ -56,7 +65,10 @@ const mockAccounts: MockAccount[] = [
       name: 'Demo Admin',
       username: 'admin',
       email: 'admin@mahadafinance.co.id',
-      roles: ['USER', 'ADMIN'],
+      roles: [
+        'USER',
+        'ADMIN',
+      ],
       division: 'IT',
       position: 'System Administrator',
     },
@@ -67,28 +79,50 @@ const mockAccounts: MockAccount[] = [
 export const mockLogin = async (
   request: LoginRequest,
 ): Promise<LoginResponse> => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 700);
-  });
-
-  const identifier = request.identifier
-    .trim()
-    .toLowerCase();
-
-  const account = mockAccounts.find(
-    ({ user }) =>
-      user.username.toLowerCase() === identifier ||
-      user.email.toLowerCase() === identifier,
+  await new Promise(
+    (resolve) => {
+      setTimeout(
+        resolve,
+        700,
+      );
+    },
   );
 
-  if (!account || account.password !== request.password) {
+  const identifier =
+    request.identifier
+      .trim()
+      .toLowerCase();
+
+  const account =
+    mockAccounts.find(
+      ({
+        user,
+      }) => {
+        return (
+          user.username
+            .toLowerCase() ===
+            identifier ||
+          user.email
+            .toLowerCase() ===
+            identifier
+        );
+      },
+    );
+
+  if (
+    !account ||
+    account.password !==
+      request.password
+  ) {
     throw new Error(
       'Email/username atau password tidak sesuai',
     );
   }
 
   return {
-    accessToken: `mock-access-token-${account.user.id}`,
-    user: account.user,
+    accessToken:
+      `mock-access-token-${account.user.id}`,
+    user:
+      account.user,
   };
 };

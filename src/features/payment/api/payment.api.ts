@@ -1,6 +1,10 @@
 import { apiClient } from '../../../lib/api/api-client';
 
 import {
+  registerMockApproval,
+} from '../../approval/mocks/approval.mock';
+
+import {
   createMockPayment,
   getMockPaymentDetail,
   getMockPayments,
@@ -70,10 +74,80 @@ export const createPayment = async (
   input: CreatePaymentInput,
 ): Promise<PaymentRequestResponse> => {
   if (useMock) {
-    return createMockPayment(
-      input,
-      false,
-    );
+    const response =
+      await createMockPayment(
+        input,
+        false,
+      );
+
+    await registerMockApproval({
+      submissionNumber:
+        response.submissionNumber,
+      module:
+        'PAYMENT',
+      title:
+        `Pembayaran ${input.vendorName.trim()}`,
+      requesterName:
+        'Fredrick Pardosi',
+      requesterDivision:
+        'Operation',
+      data: {
+        vendorName:
+          input.vendorName.trim(),
+        invoiceNumber:
+          input.invoiceNumber.trim(),
+        totalAmount:
+          input.totalAmount,
+        destinationDivision:
+          'Finance',
+      },
+      attachments: [
+        ...(input.invoiceFile
+          ? [
+              {
+                id:
+                  `${response.id}-invoice`,
+                fileName:
+                  input.invoiceFile.name,
+                fileUrl:
+                  URL.createObjectURL(
+                    input.invoiceFile,
+                  ),
+              },
+            ]
+          : []),
+        ...(input.quotationFile
+          ? [
+              {
+                id:
+                  `${response.id}-quotation`,
+                fileName:
+                  input.quotationFile.name,
+                fileUrl:
+                  URL.createObjectURL(
+                    input.quotationFile,
+                  ),
+              },
+            ]
+          : []),
+        ...(input.otherDocumentFile
+          ? [
+              {
+                id:
+                  `${response.id}-other-document`,
+                fileName:
+                  input.otherDocumentFile.name,
+                fileUrl:
+                  URL.createObjectURL(
+                    input.otherDocumentFile,
+                  ),
+              },
+            ]
+          : []),
+      ],
+    });
+
+    return response;
   }
 
   const formData =

@@ -13,24 +13,43 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
-import { paymentStatusConfig } from '../constants/payment-config';
-import { usePaymentDetail } from '../hooks/usePaymentDetail';
-import { usePaymentProcessing } from '../hooks/usePaymentProcessing';
+import {
+  useAuthStore,
+} from '../../auth/store/auth.store';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
+
+import {
+  paymentStatusConfig,
+} from '../constants/payment-config';
+
+import {
+  usePaymentDetail,
+} from '../hooks/usePaymentDetail';
+
+import {
+  usePaymentProcessing,
+} from '../hooks/usePaymentProcessing';
 
 import type {
   FinancePaymentStatus,
   PaymentStatus,
 } from '../types/payment.types';
 
-import { formatRupiah } from '../utils/payment.util';
+import {
+  formatRupiah,
+} from '../utils/payment.util';
 
 import styles from './PaymentDetailPage.module.css';
 
 const formatDate = (
   value: string,
 ): string => {
-  if (!value) {
+  if (
+    !value
+  ) {
     return '-';
   }
 
@@ -52,7 +71,9 @@ const formatDate = (
 const getNextFinanceStatus = (
   status: PaymentStatus,
 ): FinancePaymentStatus | null => {
-  switch (status) {
+  switch (
+    status
+  ) {
     case 'APPROVED':
       return 'FINANCE_CHECK';
 
@@ -70,7 +91,9 @@ const getNextFinanceStatus = (
 const getFinanceActionLabel = (
   status: PaymentStatus,
 ): string | null => {
-  switch (status) {
+  switch (
+    status
+  ) {
     case 'APPROVED':
       return 'Mulai Finance Check';
 
@@ -95,6 +118,12 @@ function PaymentDetailPage() {
     id: string;
   }>();
 
+  const user =
+    useAuthStore(
+      (state) =>
+        state.user,
+    );
+
   const fileInputRef =
     useRef<HTMLInputElement>(
       null,
@@ -117,6 +146,16 @@ function PaymentDetailPage() {
     uploadProofMutation,
   } = usePaymentProcessing();
 
+  const isFinanceProcessor =
+    Boolean(
+      user?.roles.includes(
+        'PROCESSOR',
+      ) &&
+        user.processorModules?.includes(
+          'PAYMENT',
+        ),
+    );
+
   const handleBack = () => {
     navigate(
       '/payment',
@@ -125,7 +164,10 @@ function PaymentDetailPage() {
 
   const handleProcessPayment =
     () => {
-      if (!paymentQuery.data) {
+      if (
+        !paymentQuery.data ||
+        !isFinanceProcessor
+      ) {
         return;
       }
 
@@ -134,7 +176,9 @@ function PaymentDetailPage() {
           paymentQuery.data.status,
         );
 
-      if (!nextStatus) {
+      if (
+        !nextStatus
+      ) {
         return;
       }
 
@@ -157,7 +201,8 @@ function PaymentDetailPage() {
     () => {
       if (
         !paymentQuery.data ||
-        !selectedProof
+        !selectedProof ||
+        !isFinanceProcessor
       ) {
         return;
       }
@@ -192,7 +237,11 @@ function PaymentDetailPage() {
     paymentQuery.isLoading
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         Memuat detail pembayaran...
       </div>
     );
@@ -203,7 +252,11 @@ function PaymentDetailPage() {
     !paymentQuery.data
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         <p>
           {getApiErrorMessage(
             paymentQuery.error,
@@ -213,7 +266,9 @@ function PaymentDetailPage() {
 
         <button
           type="button"
-          className={styles.retryButton}
+          className={
+            styles.retryButton
+          }
           onClick={() => {
             paymentQuery.refetch();
           }}
@@ -242,22 +297,40 @@ function PaymentDetailPage() {
       payment.status,
     );
 
+  const canProcessFinance =
+    isFinanceProcessor &&
+    Boolean(
+      nextFinanceStatus &&
+        financeActionLabel,
+    );
+
   const canUploadProof =
-    payment.status ===
-      'READY_FOR_EXECUTION' ||
-    payment.status ===
-      'EXECUTED';
+    isFinanceProcessor &&
+    (
+      payment.status ===
+        'READY_FOR_EXECUTION' ||
+      payment.status ===
+        'EXECUTED'
+    );
 
   const isProcessing =
     updateStatusMutation.isPending ||
     uploadProofMutation.isPending;
 
   return (
-    <div className={styles.page}>
+    <div
+      className={
+        styles.page
+      }
+    >
       <button
         type="button"
-        className={styles.backButton}
-        onClick={handleBack}
+        className={
+          styles.backButton
+        }
+        onClick={
+          handleBack
+        }
       >
         <ArrowLeft
           size={17}
@@ -269,7 +342,11 @@ function PaymentDetailPage() {
         </span>
       </button>
 
-      <header className={styles.pageHeader}>
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <h1>
           Detail Pembayaran
         </h1>
@@ -280,59 +357,116 @@ function PaymentDetailPage() {
         </p>
       </header>
 
-      <div className={styles.contentGrid}>
-        <main className={styles.mainContent}>
-          <section className={styles.mainCard}>
-            <div className={styles.detailHeader}>
+      <div
+        className={
+          styles.contentGrid
+        }
+      >
+        <main
+          className={
+            styles.mainContent
+          }
+        >
+          <section
+            className={
+              styles.mainCard
+            }
+          >
+            <div
+              className={
+                styles.detailHeader
+              }
+            >
               <div>
-                <p className={styles.submissionNumber}>
-                  {payment.submissionNumber}
+                <p
+                  className={
+                    styles.submissionNumber
+                  }
+                >
+                  {
+                    payment.submissionNumber
+                  }
                 </p>
 
                 <h2>
-                  Pembayaran {payment.vendorName}
+                  Pembayaran{' '}
+                  {
+                    payment.vendorName
+                  }
                 </h2>
               </div>
 
               <span
-                className={styles.statusBadge}
+                className={
+                  styles.statusBadge
+                }
                 data-variant={
                   statusConfig.variant
                 }
               >
-                {statusConfig.label}
+                {
+                  statusConfig.label
+                }
               </span>
             </div>
 
-            <div className={styles.sectionDivider} />
+            <div
+              className={
+                styles.sectionDivider
+              }
+            />
 
-            <section className={styles.detailSection}>
+            <section
+              className={
+                styles.detailSection
+              }
+            >
               <h3>
                 Informasi Vendor & Invoice
               </h3>
 
-              <div className={styles.infoGrid}>
-                <div className={styles.infoItem}>
+              <div
+                className={
+                  styles.infoGrid
+                }
+              >
+                <div
+                  className={
+                    styles.infoItem
+                  }
+                >
                   <span>
                     Nama Vendor
                   </span>
 
                   <strong>
-                    {payment.vendorName}
+                    {
+                      payment.vendorName
+                    }
                   </strong>
                 </div>
 
-                <div className={styles.infoItem}>
+                <div
+                  className={
+                    styles.infoItem
+                  }
+                >
                   <span>
                     No. Invoice
                   </span>
 
                   <strong>
-                    {payment.invoiceNumber}
+                    {
+                      payment.invoiceNumber
+                    }
                   </strong>
                 </div>
 
-                <div className={styles.infoItem}>
+                <div
+                  className={
+                    styles.infoItem
+                  }
+                >
                   <span>
                     Tanggal Invoice
                   </span>
@@ -344,17 +478,27 @@ function PaymentDetailPage() {
                   </strong>
                 </div>
 
-                <div className={styles.infoItem}>
+                <div
+                  className={
+                    styles.infoItem
+                  }
+                >
                   <span>
                     Nama Penerima
                   </span>
 
                   <strong>
-                    {payment.recipientName}
+                    {
+                      payment.recipientName
+                    }
                   </strong>
                 </div>
 
-                <div className={styles.infoItem}>
+                <div
+                  className={
+                    styles.infoItem
+                  }
+                >
                   <span>
                     Nomor Rekening Tujuan
                   </span>
@@ -367,7 +511,11 @@ function PaymentDetailPage() {
                   </strong>
                 </div>
 
-                <div className={styles.infoItem}>
+                <div
+                  className={
+                    styles.infoItem
+                  }
+                >
                   <span>
                     No. Faktur Pajak
                   </span>
@@ -382,15 +530,31 @@ function PaymentDetailPage() {
               </div>
             </section>
 
-            <div className={styles.sectionDivider} />
+            <div
+              className={
+                styles.sectionDivider
+              }
+            />
 
-            <section className={styles.detailSection}>
+            <section
+              className={
+                styles.detailSection
+              }
+            >
               <h3>
                 Perhitungan Pembayaran
               </h3>
 
-              <div className={styles.paymentGrid}>
-                <div className={styles.amountItem}>
+              <div
+                className={
+                  styles.paymentGrid
+                }
+              >
+                <div
+                  className={
+                    styles.amountItem
+                  }
+                >
                   <span>
                     DPP
                   </span>
@@ -402,7 +566,11 @@ function PaymentDetailPage() {
                   </strong>
                 </div>
 
-                <div className={styles.amountItem}>
+                <div
+                  className={
+                    styles.amountItem
+                  }
+                >
                   <span>
                     PPN
                   </span>
@@ -414,7 +582,11 @@ function PaymentDetailPage() {
                   </strong>
                 </div>
 
-                <div className={styles.amountItem}>
+                <div
+                  className={
+                    styles.amountItem
+                  }
+                >
                   <span>
                     PPh
                   </span>
@@ -442,57 +614,113 @@ function PaymentDetailPage() {
               </div>
             </section>
 
-            <div className={styles.sectionDivider} />
+            <div
+              className={
+                styles.sectionDivider
+              }
+            />
 
-            <section className={styles.detailSection}>
+            <section
+              className={
+                styles.detailSection
+              }
+            >
               <h3>
                 Dokumen
               </h3>
 
-              <div className={styles.documentGrid}>
-                <div className={styles.documentGroup}>
-                  <span className={styles.documentLabel}>
+              <div
+                className={
+                  styles.documentGrid
+                }
+              >
+                <div
+                  className={
+                    styles.documentGroup
+                  }
+                >
+                  <span
+                    className={
+                      styles.documentLabel
+                    }
+                  >
                     Invoice
                   </span>
 
-                  <div className={styles.documentItem}>
-                    {payment.invoiceFileName}
+                  <div
+                    className={
+                      styles.documentItem
+                    }
+                  >
+                    {
+                      payment.invoiceFileName
+                    }
                   </div>
                 </div>
 
-                <div className={styles.documentGroup}>
-                  <span className={styles.documentLabel}>
+                <div
+                  className={
+                    styles.documentGroup
+                  }
+                >
+                  <span
+                    className={
+                      styles.documentLabel
+                    }
+                  >
                     Quotation / PO
                   </span>
 
                   {payment.quotationFileName ? (
-                    <div className={styles.documentItem}>
+                    <div
+                      className={
+                        styles.documentItem
+                      }
+                    >
                       {
-                        payment
-                          .quotationFileName
+                        payment.quotationFileName
                       }
                     </div>
                   ) : (
-                    <div className={styles.emptyDocument}>
+                    <div
+                      className={
+                        styles.emptyDocument
+                      }
+                    >
                       Tidak ada dokumen
                     </div>
                   )}
                 </div>
 
-                <div className={styles.documentGroup}>
-                  <span className={styles.documentLabel}>
+                <div
+                  className={
+                    styles.documentGroup
+                  }
+                >
+                  <span
+                    className={
+                      styles.documentLabel
+                    }
+                  >
                     Dokumen Lain
                   </span>
 
                   {payment.otherDocumentFileName ? (
-                    <div className={styles.documentItem}>
+                    <div
+                      className={
+                        styles.documentItem
+                      }
+                    >
                       {
-                        payment
-                          .otherDocumentFileName
+                        payment.otherDocumentFileName
                       }
                     </div>
                   ) : (
-                    <div className={styles.emptyDocument}>
+                    <div
+                      className={
+                        styles.emptyDocument
+                      }
+                    >
                       Tidak ada dokumen
                     </div>
                   )}
@@ -500,12 +728,24 @@ function PaymentDetailPage() {
               </div>
 
               {payment.paymentProofFileName && (
-                <div className={styles.paymentProof}>
-                  <span className={styles.documentLabel}>
+                <div
+                  className={
+                    styles.paymentProof
+                  }
+                >
+                  <span
+                    className={
+                      styles.documentLabel
+                    }
+                  >
                     Bukti Pembayaran
                   </span>
 
-                  <div className={styles.documentItem}>
+                  <div
+                    className={
+                      styles.documentItem
+                    }
+                  >
                     {
                       payment
                         .paymentProofFileName
@@ -515,21 +755,34 @@ function PaymentDetailPage() {
               )}
 
               {canUploadProof && (
-                <div className={styles.proofUploadSection}>
-                  <span className={styles.documentLabel}>
-                    Bukti Pembayaran
-                    {' '}
+                <div
+                  className={
+                    styles.proofUploadSection
+                  }
+                >
+                  <span
+                    className={
+                      styles.documentLabel
+                    }
+                  >
+                    Bukti Pembayaran{' '}
                     <small>
                       (Opsional)
                     </small>
                   </span>
 
                   <input
-                    ref={fileInputRef}
+                    ref={
+                      fileInputRef
+                    }
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png"
-                    disabled={isProcessing}
-                    onChange={(event) => {
+                    disabled={
+                      isProcessing
+                    }
+                    onChange={(
+                      event,
+                    ) => {
                       setSelectedProof(
                         event.target
                           .files?.[0] ??
@@ -541,9 +794,15 @@ function PaymentDetailPage() {
                   />
 
                   {selectedProof && (
-                    <div className={styles.selectedProof}>
+                    <div
+                      className={
+                        styles.selectedProof
+                      }
+                    >
                       <span>
-                        {selectedProof.name}
+                        {
+                          selectedProof.name
+                        }
                       </span>
 
                       <button
@@ -551,7 +810,9 @@ function PaymentDetailPage() {
                         disabled={
                           uploadProofMutation.isPending
                         }
-                        onClick={handleUploadProof}
+                        onClick={
+                          handleUploadProof
+                        }
                       >
                         <Upload
                           size={15}
@@ -566,7 +827,11 @@ function PaymentDetailPage() {
                   )}
 
                   {uploadProofMutation.isSuccess && (
-                    <div className={styles.successMessage}>
+                    <div
+                      className={
+                        styles.successMessage
+                      }
+                    >
                       {
                         uploadProofMutation
                           .data.message
@@ -575,7 +840,11 @@ function PaymentDetailPage() {
                   )}
 
                   {uploadProofMutation.isError && (
-                    <div className={styles.errorMessage}>
+                    <div
+                      className={
+                        styles.errorMessage
+                      }
+                    >
                       {getApiErrorMessage(
                         uploadProofMutation.error,
                         'Bukti pembayaran gagal diunggah.',
@@ -588,29 +857,47 @@ function PaymentDetailPage() {
           </section>
         </main>
 
-        <aside className={styles.sideContent}>
-          <section className={styles.statusCard}>
+        <aside
+          className={
+            styles.sideContent
+          }
+        >
+          <section
+            className={
+              styles.statusCard
+            }
+          >
             <h3>
               Status Pembayaran
             </h3>
 
             <span
-              className={styles.largeStatusBadge}
+              className={
+                styles.largeStatusBadge
+              }
               data-variant={
                 statusConfig.variant
               }
             >
-              {statusConfig.label}
+              {
+                statusConfig.label
+              }
             </span>
 
-            <div className={styles.statusInfo}>
+            <div
+              className={
+                styles.statusInfo
+              }
+            >
               <div>
                 <span>
                   Pengaju
                 </span>
 
                 <strong>
-                  {payment.requesterName}
+                  {
+                    payment.requesterName
+                  }
                 </strong>
               </div>
 
@@ -647,17 +934,19 @@ function PaymentDetailPage() {
 
                 <strong>
                   {
-                    payment
-                      .submissionDate
+                    payment.submissionDate
                   }
                 </strong>
               </div>
             </div>
           </section>
 
-          {nextFinanceStatus &&
-            financeActionLabel && (
-            <section className={styles.financeActionCard}>
+          {canProcessFinance && (
+            <section
+              className={
+                styles.financeActionCard
+              }
+            >
               <h3>
                 Proses Finance
               </h3>
@@ -669,7 +958,9 @@ function PaymentDetailPage() {
 
               <button
                 type="button"
-                className={styles.financeActionButton}
+                className={
+                  styles.financeActionButton
+                }
                 disabled={
                   updateStatusMutation.isPending
                 }
@@ -683,7 +974,11 @@ function PaymentDetailPage() {
               </button>
 
               {updateStatusMutation.isError && (
-                <div className={styles.errorMessage}>
+                <div
+                  className={
+                    styles.errorMessage
+                  }
+                >
                   {getApiErrorMessage(
                     updateStatusMutation.error,
                     'Status pembayaran gagal diperbarui.',
@@ -693,12 +988,20 @@ function PaymentDetailPage() {
             </section>
           )}
 
-          <section className={styles.historySection}>
+          <section
+            className={
+              styles.historySection
+            }
+          >
             <h3>
               Riwayat Proses
             </h3>
 
-            <div className={styles.timeline}>
+            <div
+              className={
+                styles.timeline
+              }
+            >
               {payment.history.map(
                 (
                   history,
@@ -711,7 +1014,9 @@ function PaymentDetailPage() {
 
                   return (
                     <div
-                      key={history.id}
+                      key={
+                        history.id
+                      }
                       className={
                         styles.timelineItem
                       }
@@ -749,16 +1054,14 @@ function PaymentDetailPage() {
 
                         <span>
                           {
-                            history
-                              .actionDate
+                            history.actionDate
                           }
                         </span>
 
                         <p>
                           Oleh{' '}
                           {
-                            history
-                              .actionBy
+                            history.actionBy
                           }
                         </p>
 

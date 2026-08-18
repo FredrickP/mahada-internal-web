@@ -8,11 +8,13 @@ import {
   createMockITRequest,
   getMockITRequestDetail,
   getMockITRequests,
+  updateMockITRequestProcessorStatus,
 } from '../mocks/it-request.mock';
 
 import type {
   CreateITRequestInput,
   CreateITRequestResponse,
+  ITRequest,
   ITRequestDetail,
   ITRequestFilter,
   ITRequestListResponse,
@@ -22,14 +24,25 @@ import type {
 const useMock =
   import.meta.env.VITE_USE_MOCK === 'true';
 
+export interface UpdateITRequestProcessorStatusInput {
+  id: string;
+  status:
+    | 'IN_PROGRESS'
+    | 'COMPLETED';
+}
+
 const formatRequestType = (
   type: CreateITRequestInput['type'],
 ): string => {
-  if (type === 'REQUEST') {
+  if (
+    type === 'REQUEST'
+  ) {
     return 'Request';
   }
 
-  if (type === 'CHANGE') {
+  if (
+    type === 'CHANGE'
+  ) {
     return 'Change';
   }
 
@@ -56,7 +69,9 @@ const formatPriority = (
 export const getITRequests = async (
   filter: ITRequestFilter,
 ): Promise<ITRequestListResponse> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     const data =
       await getMockITRequests(
         filter,
@@ -64,7 +79,8 @@ export const getITRequests = async (
 
     return {
       data,
-      total: data.length,
+      total:
+        data.length,
     };
   }
 
@@ -114,12 +130,15 @@ const appendAttachments = (
  * - masuk ke proses approval.
  *
  * INCIDENT:
- * - tidak membutuhkan approval.
+ * - tidak membutuhkan approval
+ * - langsung masuk proses IT.
  */
 export const createITRequest = async (
   input: CreateITRequestInput,
 ): Promise<CreateITRequestResponse> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     const response =
       await createMockITRequest(
         input,
@@ -130,7 +149,9 @@ export const createITRequest = async (
       input.type === 'REQUEST' ||
       input.type === 'CHANGE';
 
-    if (needApproval) {
+    if (
+      needApproval
+    ) {
       await registerMockApproval({
         submissionNumber:
           response.requestNumber,
@@ -230,7 +251,9 @@ export const createITRequest = async (
 export const saveITRequestDraft = async (
   input: SaveITRequestDraftInput,
 ): Promise<CreateITRequestResponse> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     return createMockITRequest(
       input,
       true,
@@ -240,7 +263,9 @@ export const saveITRequestDraft = async (
   const formData =
     new FormData();
 
-  if (input.type) {
+  if (
+    input.type
+  ) {
     formData.append(
       'type',
       input.type,
@@ -250,7 +275,9 @@ export const saveITRequestDraft = async (
   const title =
     input.title?.trim();
 
-  if (title) {
+  if (
+    title
+  ) {
     formData.append(
       'title',
       title,
@@ -260,14 +287,18 @@ export const saveITRequestDraft = async (
   const description =
     input.description?.trim();
 
-  if (description) {
+  if (
+    description
+  ) {
     formData.append(
       'description',
       description,
     );
   }
 
-  if (input.priority) {
+  if (
+    input.priority
+  ) {
     formData.append(
       'priority',
       input.priority,
@@ -293,10 +324,15 @@ export const saveITRequestDraft = async (
   return response.data;
 };
 
+/**
+ * Get detail IT Request.
+ */
 export const getITRequestDetail = async (
   id: string,
 ): Promise<ITRequestDetail> => {
-  if (useMock) {
+  if (
+    useMock
+  ) {
     return getMockITRequestDetail(
       id,
     );
@@ -305,6 +341,39 @@ export const getITRequestDetail = async (
   const response =
     await apiClient.get<ITRequestDetail>(
       `/it-requests/${id}`,
+    );
+
+  return response.data;
+};
+
+/**
+ * Update status IT Request oleh Processor.
+ *
+ * APPROVED
+ * -> IN_PROGRESS
+ *
+ * IN_PROGRESS
+ * -> COMPLETED
+ */
+export const updateITRequestProcessorStatus = async (
+  input: UpdateITRequestProcessorStatusInput,
+): Promise<ITRequest> => {
+  if (
+    useMock
+  ) {
+    return updateMockITRequestProcessorStatus(
+      input.id,
+      input.status,
+    );
+  }
+
+  const response =
+    await apiClient.put<ITRequest>(
+      `/it-requests/${input.id}/status`,
+      {
+        status:
+          input.status,
+      },
     );
 
   return response.data;

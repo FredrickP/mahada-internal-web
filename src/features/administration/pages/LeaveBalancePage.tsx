@@ -15,7 +15,9 @@ import Pagination, {
   type PaginationPageSize,
 } from '../../../components/common/Pagination';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
 
 import {
   useLeaveBalance,
@@ -57,9 +59,28 @@ const adjustmentTypeOptions: {
   },
 ];
 
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
+};
+
 function LeaveBalancePage() {
-  const [year, setYear] =
-    useState(2026);
+  const [
+    year,
+    setYear,
+  ] = useState(
+    2026,
+  );
 
   const leaveBalanceQuery =
     useLeaveBalance(
@@ -86,7 +107,9 @@ function LeaveBalancePage() {
   const [
     currentPage,
     setCurrentPage,
-  ] = useState(1);
+  ] = useState(
+    1,
+  );
 
   const [
     pageSize,
@@ -112,142 +135,180 @@ function LeaveBalancePage() {
   const [
     amount,
     setAmount,
-  ] = useState('');
+  ] = useState(
+    '',
+  );
 
   const [
     reason,
     setReason,
-  ] = useState('');
+  ] = useState(
+    '',
+  );
 
   const [
     validationError,
     setValidationError,
-  ] = useState('');
+  ] = useState(
+    '',
+  );
 
   const divisionOptions =
-    useMemo(() => {
-      if (!leaveBalanceQuery.data) {
-        return [];
-      }
+    useMemo(
+      () => {
+        if (
+          !leaveBalanceQuery.data
+        ) {
+          return [];
+        }
 
-      return [
-        ...new Set(
-          leaveBalanceQuery.data.balances.map(
-            (balance) =>
-              balance.division,
+        return [
+          ...new Set(
+            leaveBalanceQuery.data.balances.map(
+              (
+                balance,
+              ) =>
+                balance.division,
+            ),
           ),
-        ),
-      ].sort();
-    }, [
-      leaveBalanceQuery.data,
-    ]);
+        ].sort();
+      },
+      [
+        leaveBalanceQuery.data,
+      ],
+    );
 
   const filteredBalances =
-    useMemo(() => {
-      if (!leaveBalanceQuery.data) {
-        return [];
-      }
+    useMemo(
+      () => {
+        if (
+          !leaveBalanceQuery.data
+        ) {
+          return [];
+        }
 
-      const keyword =
-        appliedFilter.keyword
-          .trim()
-          .toLowerCase();
+        const keyword =
+          appliedFilter.keyword
+            .trim()
+            .toLowerCase();
 
-      return leaveBalanceQuery.data.balances.filter(
-        (balance) => {
-          const matchesKeyword =
-            !keyword ||
-            balance.name
-              .toLowerCase()
-              .includes(keyword) ||
-            balance.email
-              .toLowerCase()
-              .includes(keyword);
+        return leaveBalanceQuery.data.balances.filter(
+          (
+            balance,
+          ) => {
+            const matchesKeyword =
+              !keyword ||
+              balance.name
+                .toLowerCase()
+                .includes(
+                  keyword,
+                ) ||
+              balance.email
+                .toLowerCase()
+                .includes(
+                  keyword,
+                );
 
-          const matchesDivision =
-            !appliedFilter.division ||
-            balance.division ===
-              appliedFilter.division;
+            const matchesDivision =
+              !appliedFilter.division ||
+              balance.division ===
+                appliedFilter.division;
 
-          return (
-            matchesKeyword &&
-            matchesDivision
-          );
-        },
-      );
-    }, [
-      appliedFilter,
-      leaveBalanceQuery.data,
-    ]);
+            return (
+              matchesKeyword &&
+              matchesDivision
+            );
+          },
+        );
+      },
+      [
+        appliedFilter,
+        leaveBalanceQuery.data,
+      ],
+    );
 
   const paginatedBalances =
-    useMemo(() => {
-      if (
-        pageSize === 'ALL'
-      ) {
-        return filteredBalances;
-      }
+    useMemo(
+      () => {
+        if (
+          pageSize ===
+          'ALL'
+        ) {
+          return filteredBalances;
+        }
 
-      const startIndex =
-        (
-          currentPage -
-          1
-        ) *
-        pageSize;
+        const startIndex =
+          (
+            currentPage -
+            1
+          ) *
+          pageSize;
 
-      return filteredBalances.slice(
-        startIndex,
-        startIndex +
-          pageSize,
-      );
-    }, [
-      filteredBalances,
-      currentPage,
-      pageSize,
-    ]);
+        return filteredBalances.slice(
+          startIndex,
+          startIndex +
+            pageSize,
+        );
+      },
+      [
+        filteredBalances,
+        currentPage,
+        pageSize,
+      ],
+    );
 
   const previewRemainingBalance =
-    useMemo(() => {
-      if (!selectedBalance) {
-        return 0;
-      }
+    useMemo(
+      () => {
+        if (
+          !selectedBalance
+        ) {
+          return 0;
+        }
 
-      const numericAmount =
-        Number(amount);
+        const numericAmount =
+          Number(
+            amount,
+          );
 
-      if (
-        amount === '' ||
-        Number.isNaN(
-          numericAmount,
-        )
-      ) {
-        return selectedBalance.remainingBalance;
-      }
+        if (
+          amount ===
+            '' ||
+          Number.isNaN(
+            numericAmount,
+          )
+        ) {
+          return selectedBalance.remainingBalance;
+        }
 
-      if (
-        adjustmentType === 'ADD'
-      ) {
-        return (
-          selectedBalance.remainingBalance +
-          numericAmount
-        );
-      }
+        if (
+          adjustmentType ===
+          'ADD'
+        ) {
+          return (
+            selectedBalance.remainingBalance +
+            numericAmount
+          );
+        }
 
-      if (
-        adjustmentType === 'DEDUCT'
-      ) {
-        return (
-          selectedBalance.remainingBalance -
-          numericAmount
-        );
-      }
+        if (
+          adjustmentType ===
+          'DEDUCT'
+        ) {
+          return (
+            selectedBalance.remainingBalance -
+            numericAmount
+          );
+        }
 
-      return numericAmount;
-    }, [
-      adjustmentType,
-      amount,
-      selectedBalance,
-    ]);
+        return numericAmount;
+      },
+      [
+        adjustmentType,
+        amount,
+        selectedBalance,
+      ],
+    );
 
   const handleFilter = () => {
     setAppliedFilter({
@@ -274,7 +335,8 @@ function LeaveBalancePage() {
   };
 
   const handlePageSizeChange = (
-    value: PaginationPageSize,
+    value:
+      PaginationPageSize,
   ) => {
     setPageSize(
       value,
@@ -286,7 +348,8 @@ function LeaveBalancePage() {
   };
 
   const handleOpenAdjustment = (
-    balance: LeaveBalanceRecord,
+    balance:
+      LeaveBalanceRecord,
   ) => {
     updateBalanceMutation.reset();
 
@@ -298,11 +361,17 @@ function LeaveBalancePage() {
       'ADD',
     );
 
-    setAmount('');
+    setAmount(
+      '',
+    );
 
-    setReason('');
+    setReason(
+      '',
+    );
 
-    setValidationError('');
+    setValidationError(
+      '',
+    );
   };
 
   const handleCloseAdjustment = () => {
@@ -316,21 +385,30 @@ function LeaveBalancePage() {
       null,
     );
 
-    setAmount('');
+    setAmount(
+      '',
+    );
 
-    setReason('');
+    setReason(
+      '',
+    );
 
-    setValidationError('');
+    setValidationError(
+      '',
+    );
 
     updateBalanceMutation.reset();
   };
 
   const validateAdjustment = () => {
     const numericAmount =
-      Number(amount);
+      Number(
+        amount,
+      );
 
     if (
-      amount.trim() === '' ||
+      amount.trim() ===
+        '' ||
       Number.isNaN(
         numericAmount,
       )
@@ -343,7 +421,8 @@ function LeaveBalancePage() {
     }
 
     if (
-      numericAmount < 0
+      numericAmount <
+      0
     ) {
       setValidationError(
         'Jumlah saldo tidak boleh kurang dari 0.',
@@ -353,8 +432,10 @@ function LeaveBalancePage() {
     }
 
     if (
-      adjustmentType !== 'SET' &&
-      numericAmount === 0
+      adjustmentType !==
+        'SET' &&
+      numericAmount ===
+        0
     ) {
       setValidationError(
         'Jumlah adjustment harus lebih dari 0.',
@@ -364,7 +445,8 @@ function LeaveBalancePage() {
     }
 
     if (
-      previewRemainingBalance < 0
+      previewRemainingBalance <
+      0
     ) {
       setValidationError(
         'Saldo akhir tidak boleh kurang dari 0.',
@@ -383,7 +465,9 @@ function LeaveBalancePage() {
       return false;
     }
 
-    setValidationError('');
+    setValidationError(
+      '',
+    );
 
     return true;
   };
@@ -404,7 +488,9 @@ function LeaveBalancePage() {
           selectedBalance.year,
         adjustmentType,
         amount:
-          Number(amount),
+          Number(
+            amount,
+          ),
         reason:
           reason.trim(),
       },
@@ -414,11 +500,17 @@ function LeaveBalancePage() {
             null,
           );
 
-          setAmount('');
+          setAmount(
+            '',
+          );
 
-          setReason('');
+          setReason(
+            '',
+          );
 
-          setValidationError('');
+          setValidationError(
+            '',
+          );
         },
       },
     );
@@ -428,7 +520,11 @@ function LeaveBalancePage() {
     leaveBalanceQuery.isLoading
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         Memuat saldo cuti...
       </div>
     );
@@ -439,7 +535,11 @@ function LeaveBalancePage() {
     !leaveBalanceQuery.data
   ) {
     return (
-      <div className={styles.stateContainer}>
+      <div
+        className={
+          styles.stateContainer
+        }
+      >
         <p>
           {getApiErrorMessage(
             leaveBalanceQuery.error,
@@ -449,7 +549,9 @@ function LeaveBalancePage() {
 
         <button
           type="button"
-          className={styles.retryButton}
+          className={
+            styles.retryButton
+          }
           onClick={() => {
             leaveBalanceQuery.refetch();
           }}
@@ -462,11 +564,20 @@ function LeaveBalancePage() {
 
   const {
     summary,
-  } = leaveBalanceQuery.data;
+  } =
+    leaveBalanceQuery.data;
 
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <div>
           <h1>
             Saldo Cuti
@@ -479,15 +590,25 @@ function LeaveBalancePage() {
           </p>
         </div>
 
-        <div className={styles.yearField}>
-          <label htmlFor="leave-year">
+        <div
+          className={
+            styles.yearField
+          }
+        >
+          <label
+            htmlFor="leave-year"
+          >
             Tahun
           </label>
 
           <select
             id="leave-year"
-            value={year}
-            onChange={(event) => {
+            value={
+              year
+            }
+            onChange={(
+              event,
+            ) => {
               setYear(
                 Number(
                   event.target.value,
@@ -499,22 +620,38 @@ function LeaveBalancePage() {
               );
             }}
           >
-            <option value={2026}>
+            <option
+              value={
+                2026
+              }
+            >
               2026
             </option>
           </select>
         </div>
       </header>
 
-      <section className={styles.summaryGrid}>
-        <article className={styles.summaryCard}>
+      <section
+        className={
+          styles.summaryGrid
+        }
+      >
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="gold"
           >
             <Users
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -535,14 +672,22 @@ function LeaveBalancePage() {
           </div>
         </article>
 
-        <article className={styles.summaryCard}>
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="blue"
           >
             <CalendarDays
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -563,14 +708,22 @@ function LeaveBalancePage() {
           </div>
         </article>
 
-        <article className={styles.summaryCard}>
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="orange"
           >
             <Clock3
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -591,14 +744,22 @@ function LeaveBalancePage() {
           </div>
         </article>
 
-        <article className={styles.summaryCard}>
+        <article
+          className={
+            styles.summaryCard
+          }
+        >
           <div
-            className={styles.summaryIcon}
+            className={
+              styles.summaryIcon
+            }
             data-variant="green"
           >
             <CalendarDays
               size={19}
-              strokeWidth={1.8}
+              strokeWidth={
+                1.8
+              }
             />
           </div>
 
@@ -620,11 +781,18 @@ function LeaveBalancePage() {
         </article>
       </section>
 
-      {summary.lowBalanceEmployees > 0 && (
-        <div className={styles.balanceNotice}>
+      {summary.lowBalanceEmployees >
+        0 && (
+        <div
+          className={
+            styles.balanceNotice
+          }
+        >
           <CircleAlert
             size={17}
-            strokeWidth={1.8}
+            strokeWidth={
+              1.8
+            }
           />
 
           <span>
@@ -638,15 +806,28 @@ function LeaveBalancePage() {
       )}
 
       {updateBalanceMutation.isSuccess && (
-        <div className={styles.successMessage}>
+        <div
+          className={
+            styles.successMessage
+          }
+        >
           {
-            updateBalanceMutation.data.message
+            updateBalanceMutation
+              .data.message
           }
         </div>
       )}
 
-      <section className={styles.balanceSection}>
-        <div className={styles.sectionHeader}>
+      <section
+        className={
+          styles.balanceSection
+        }
+      >
+        <div
+          className={
+            styles.sectionHeader
+          }
+        >
           <div>
             <h2>
               Saldo Cuti Karyawan
@@ -660,24 +841,41 @@ function LeaveBalancePage() {
           </div>
         </div>
 
-        <div className={styles.filterCard}>
-          <div className={styles.filterGrid}>
+        <div
+          className={
+            styles.filterCard
+          }
+        >
+          <div
+            className={
+              styles.filterGrid
+            }
+          >
             <input
               type="text"
               placeholder="Cari nama atau email"
-              value={formFilter.keyword}
-              onChange={(event) => {
+              value={
+                formFilter.keyword
+              }
+              onChange={(
+                event,
+              ) => {
                 setFormFilter(
-                  (current) => ({
+                  (
+                    current,
+                  ) => ({
                     ...current,
                     keyword:
                       event.target.value,
                   }),
                 );
               }}
-              onKeyDown={(event) => {
+              onKeyDown={(
+                event,
+              ) => {
                 if (
-                  event.key === 'Enter'
+                  event.key ===
+                  'Enter'
                 ) {
                   handleFilter();
                 }
@@ -685,10 +883,16 @@ function LeaveBalancePage() {
             />
 
             <select
-              value={formFilter.division}
-              onChange={(event) => {
+              value={
+                formFilter.division
+              }
+              onChange={(
+                event,
+              ) => {
                 setFormFilter(
-                  (current) => ({
+                  (
+                    current,
+                  ) => ({
                     ...current,
                     division:
                       event.target.value,
@@ -701,12 +905,20 @@ function LeaveBalancePage() {
               </option>
 
               {divisionOptions.map(
-                (division) => (
+                (
+                  division,
+                ) => (
                   <option
-                    key={division}
-                    value={division}
+                    key={
+                      division
+                    }
+                    value={
+                      division
+                    }
                   >
-                    {division}
+                    {
+                      division
+                    }
                   </option>
                 ),
               )}
@@ -714,63 +926,118 @@ function LeaveBalancePage() {
 
             <button
               type="button"
-              className={styles.filterButton}
-              onClick={handleFilter}
+              className={
+                styles.filterButton
+              }
+              onClick={
+                handleFilter
+              }
             >
               Filter
             </button>
 
             <button
               type="button"
-              className={styles.resetButton}
-              onClick={handleResetFilter}
+              className={
+                styles.resetButton
+              }
+              onClick={
+                handleResetFilter
+              }
             >
               Reset
             </button>
           </div>
         </div>
 
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+        <div
+          className={
+            styles.tableWrapper
+          }
+        >
+          <table
+            className={
+              styles.table
+            }
+          >
             <thead>
               <tr>
-                <th>Nama</th>
-                <th>Divisi</th>
-                <th>Saldo Awal</th>
-                <th>Adjustment</th>
-                <th>Terpakai</th>
-                <th>Sisa</th>
-                <th>Update Terakhir</th>
-                <th>Aksi</th>
+                <th>
+                  Nama
+                </th>
+
+                <th>
+                  Divisi
+                </th>
+
+                <th>
+                  Saldo Awal
+                </th>
+
+                <th>
+                  Adjustment
+                </th>
+
+                <th>
+                  Terpakai
+                </th>
+
+                <th>
+                  Sisa
+                </th>
+
+                <th>
+                  Update Terakhir
+                </th>
+
+                <th>
+                  Aksi
+                </th>
               </tr>
             </thead>
 
             <tbody>
               {paginatedBalances.map(
-                (balance) => (
+                (
+                  balance,
+                ) => (
                   <tr
                     key={
                       balance.userId
                     }
                   >
                     <td>
-                      <div className={styles.userIdentity}>
+                      <div
+                        className={
+                          styles.userIdentity
+                        }
+                      >
                         <strong>
-                          {balance.name}
+                          {
+                            balance.name
+                          }
                         </strong>
 
                         <span>
-                          {balance.email}
+                          {
+                            balance.email
+                          }
                         </span>
                       </div>
                     </td>
 
                     <td>
-                      {balance.division}
+                      {
+                        balance.division
+                      }
                     </td>
 
                     <td>
-                      <span className={styles.balanceValue}>
+                      <span
+                        className={
+                          styles.balanceValue
+                        }
+                      >
                         {
                           balance.openingBalance
                         }
@@ -779,14 +1046,17 @@ function LeaveBalancePage() {
 
                     <td>
                       <span
-                        className={styles.adjustmentValue}
+                        className={
+                          styles.adjustmentValue
+                        }
                         data-negative={
                           balance.adjustmentBalance <
                           0
                         }
                       >
                         {balance.adjustmentBalance >
-                          0 && '+'}
+                          0 &&
+                          '+'}
 
                         {
                           balance.adjustmentBalance
@@ -795,7 +1065,11 @@ function LeaveBalancePage() {
                     </td>
 
                     <td>
-                      <span className={styles.usedValue}>
+                      <span
+                        className={
+                          styles.usedValue
+                        }
+                      >
                         {
                           balance.usedBalance
                         }
@@ -804,7 +1078,9 @@ function LeaveBalancePage() {
 
                     <td>
                       <span
-                        className={styles.remainingBadge}
+                        className={
+                          styles.remainingBadge
+                        }
                         data-low={
                           balance.remainingBalance <=
                           3
@@ -818,7 +1094,11 @@ function LeaveBalancePage() {
                     </td>
 
                     <td>
-                      <span className={styles.updatedAt}>
+                      <span
+                        className={
+                          styles.updatedAt
+                        }
+                      >
                         {
                           balance.lastUpdatedAt
                         }
@@ -828,7 +1108,9 @@ function LeaveBalancePage() {
                     <td>
                       <button
                         type="button"
-                        className={styles.adjustButton}
+                        className={
+                          styles.adjustButton
+                        }
                         disabled={
                           balance.status ===
                           'INACTIVE'
@@ -848,8 +1130,13 @@ function LeaveBalancePage() {
             </tbody>
           </table>
 
-          {filteredBalances.length === 0 && (
-            <div className={styles.emptyState}>
+          {filteredBalances.length ===
+            0 && (
+            <div
+              className={
+                styles.emptyState
+              }
+            >
               Tidak ada data saldo cuti
               yang sesuai dengan filter.
             </div>
@@ -880,9 +1167,13 @@ function LeaveBalancePage() {
 
       {selectedBalance && (
         <div
-          className={styles.modalOverlay}
+          className={
+            styles.modalOverlay
+          }
           role="presentation"
-          onMouseDown={(event) => {
+          onMouseDown={(
+            event,
+          ) => {
             if (
               event.target ===
               event.currentTarget
@@ -892,14 +1183,22 @@ function LeaveBalancePage() {
           }}
         >
           <div
-            className={styles.modal}
+            className={
+              styles.modal
+            }
             role="dialog"
             aria-modal="true"
             aria-labelledby="adjustment-title"
           >
-            <div className={styles.modalHeader}>
+            <div
+              className={
+                styles.modalHeader
+              }
+            >
               <div>
-                <h2 id="adjustment-title">
+                <h2
+                  id="adjustment-title"
+                >
                   Penyesuaian Saldo Cuti
                 </h2>
 
@@ -912,7 +1211,9 @@ function LeaveBalancePage() {
 
               <button
                 type="button"
-                className={styles.closeButton}
+                className={
+                  styles.closeButton
+                }
                 disabled={
                   updateBalanceMutation.isPending
                 }
@@ -922,12 +1223,18 @@ function LeaveBalancePage() {
               >
                 <X
                   size={18}
-                  strokeWidth={1.8}
+                  strokeWidth={
+                    1.8
+                  }
                 />
               </button>
             </div>
 
-            <div className={styles.employeeCard}>
+            <div
+              className={
+                styles.employeeCard
+              }
+            >
               <div>
                 <strong>
                   {
@@ -942,7 +1249,11 @@ function LeaveBalancePage() {
                 </span>
               </div>
 
-              <div className={styles.employeeBalance}>
+              <div
+                className={
+                  styles.employeeBalance
+                }
+              >
                 <span>
                   Saldo Saat Ini
                 </span>
@@ -956,10 +1267,21 @@ function LeaveBalancePage() {
               </div>
             </div>
 
-            <div className={styles.modalForm}>
-              <div className={styles.formGroup}>
-                <label htmlFor="adjustment-type">
+            <div
+              className={
+                styles.modalForm
+              }
+            >
+              <div
+                className={
+                  styles.formGroup
+                }
+              >
+                <label
+                  htmlFor="adjustment-type"
+                >
                   Tipe Penyesuaian
+                  <RequiredMark />
                 </label>
 
                 <select
@@ -970,10 +1292,13 @@ function LeaveBalancePage() {
                   disabled={
                     updateBalanceMutation.isPending
                   }
-                  onChange={(event) => {
+                  onChange={(
+                    event,
+                  ) => {
                     setAdjustmentType(
                       event.target
-                        .value as LeaveBalanceAdjustmentType,
+                        .value as
+                        LeaveBalanceAdjustmentType,
                     );
 
                     setValidationError(
@@ -982,37 +1307,61 @@ function LeaveBalancePage() {
                   }}
                 >
                   {adjustmentTypeOptions.map(
-                    (option) => (
+                    (
+                      option,
+                    ) => (
                       <option
-                        key={option.value}
-                        value={option.value}
+                        key={
+                          option.value
+                        }
+                        value={
+                          option.value
+                        }
                       >
-                        {option.label}
+                        {
+                          option.label
+                        }
                       </option>
                     ),
                   )}
                 </select>
               </div>
 
-              <div className={styles.formGroup}>
-                <label htmlFor="adjustment-amount">
-                  {adjustmentType === 'SET'
+              <div
+                className={
+                  styles.formGroup
+                }
+              >
+                <label
+                  htmlFor="adjustment-amount"
+                >
+                  {adjustmentType ===
+                  'SET'
                     ? 'Saldo Akhir'
                     : 'Jumlah Hari'}
+                  <RequiredMark />
                 </label>
 
-                <div className={styles.amountInput}>
+                <div
+                  className={
+                    styles.amountInput
+                  }
+                >
                   <input
                     id="adjustment-amount"
                     type="number"
                     min="0"
                     step="1"
                     placeholder="0"
-                    value={amount}
+                    value={
+                      amount
+                    }
                     disabled={
                       updateBalanceMutation.isPending
                     }
-                    onChange={(event) => {
+                    onChange={(
+                      event,
+                    ) => {
                       setAmount(
                         event.target.value,
                       );
@@ -1029,20 +1378,31 @@ function LeaveBalancePage() {
                 </div>
               </div>
 
-              <div className={styles.formGroup}>
-                <label htmlFor="adjustment-reason">
+              <div
+                className={
+                  styles.formGroup
+                }
+              >
+                <label
+                  htmlFor="adjustment-reason"
+                >
                   Alasan Penyesuaian
+                  <RequiredMark />
                 </label>
 
                 <textarea
                   id="adjustment-reason"
                   rows={4}
                   placeholder="Contoh: Penambahan saldo cuti berdasarkan kebijakan HCGA"
-                  value={reason}
+                  value={
+                    reason
+                  }
                   disabled={
                     updateBalanceMutation.isPending
                   }
-                  onChange={(event) => {
+                  onChange={(
+                    event,
+                  ) => {
                     setReason(
                       event.target.value,
                     );
@@ -1054,7 +1414,11 @@ function LeaveBalancePage() {
                 />
               </div>
 
-              <div className={styles.previewCard}>
+              <div
+                className={
+                  styles.previewCard
+                }
+              >
                 <span>
                   Preview Saldo Akhir
                 </span>
@@ -1073,13 +1437,23 @@ function LeaveBalancePage() {
               </div>
 
               {validationError && (
-                <div className={styles.modalError}>
-                  {validationError}
+                <div
+                  className={
+                    styles.modalError
+                  }
+                >
+                  {
+                    validationError
+                  }
                 </div>
               )}
 
               {updateBalanceMutation.isError && (
-                <div className={styles.modalError}>
+                <div
+                  className={
+                    styles.modalError
+                  }
+                >
                   {getApiErrorMessage(
                     updateBalanceMutation.error,
                     'Saldo cuti gagal diperbarui.',
@@ -1088,10 +1462,16 @@ function LeaveBalancePage() {
               )}
             </div>
 
-            <div className={styles.modalActions}>
+            <div
+              className={
+                styles.modalActions
+              }
+            >
               <button
                 type="button"
-                className={styles.cancelButton}
+                className={
+                  styles.cancelButton
+                }
                 disabled={
                   updateBalanceMutation.isPending
                 }
@@ -1104,7 +1484,9 @@ function LeaveBalancePage() {
 
               <button
                 type="button"
-                className={styles.saveButton}
+                className={
+                  styles.saveButton
+                }
                 disabled={
                   updateBalanceMutation.isPending
                 }

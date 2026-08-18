@@ -1,15 +1,32 @@
-import { useMemo, useState } from 'react';
+import {
+  useMemo,
+  useState,
+} from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  zodResolver,
+} from '@hookform/resolvers/zod';
+
 import {
   Controller,
   useForm,
 } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
-import { getApiErrorMessage } from '../../../lib/api/api-error';
+import {
+  FileUp,
+} from 'lucide-react';
 
-import { useCreatePayment } from '../hooks/useCreatePayment';
+import {
+  useNavigate,
+} from 'react-router-dom';
+
+import {
+  getApiErrorMessage,
+} from '../../../lib/api/api-error';
+
+import {
+  useCreatePayment,
+} from '../hooks/useCreatePayment';
 
 import {
   createPaymentSchema,
@@ -26,25 +43,88 @@ import {
 
 import styles from './CreatePaymentPage.module.css';
 
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
+};
+
+const FileLabelContent = ({
+  fileName,
+}: {
+  fileName?: string;
+}) => {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        minWidth: 0,
+      }}
+    >
+      <FileUp
+        size={16}
+        strokeWidth={1.8}
+        aria-hidden="true"
+      />
+
+      <span
+        style={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {fileName || 'Pilih dokumen'}
+      </span>
+    </span>
+  );
+};
+
 function CreatePaymentPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const {
     createMutation,
     saveDraftMutation,
   } = useCreatePayment();
 
-  const [invoiceFile, setInvoiceFile] =
-    useState<File | null>(null);
+  const [
+    invoiceFile,
+    setInvoiceFile,
+  ] = useState<File | null>(
+    null,
+  );
 
-  const [quotationFile, setQuotationFile] =
-    useState<File | null>(null);
+  const [
+    quotationFile,
+    setQuotationFile,
+  ] = useState<File | null>(
+    null,
+  );
 
-  const [otherDocumentFile, setOtherDocumentFile] =
-    useState<File | null>(null);
+  const [
+    otherDocumentFile,
+    setOtherDocumentFile,
+  ] = useState<File | null>(
+    null,
+  );
 
-  const [invoiceError, setInvoiceError] =
-    useState('');
+  const [
+    invoiceError,
+    setInvoiceError,
+  ] = useState('');
 
   const {
     register,
@@ -56,9 +136,10 @@ function CreatePaymentPage() {
       errors,
     },
   } = useForm<CreatePaymentFormValues>({
-    resolver: zodResolver(
-      createPaymentSchema,
-    ),
+    resolver:
+      zodResolver(
+        createPaymentSchema,
+      ),
     defaultValues: {
       vendorName: '',
       invoiceNumber: '',
@@ -71,38 +152,49 @@ function CreatePaymentPage() {
   });
 
   const dppAmount =
-    watch('dppAmount');
+    watch(
+      'dppAmount',
+    );
 
   const ppnAmount =
-    useMemo(() => {
-      return calculatePpnAmount(
+    useMemo(
+      () => {
+        return calculatePpnAmount(
+          dppAmount,
+        );
+      },
+      [
         dppAmount,
-      );
-    }, [
-      dppAmount,
-    ]);
+      ],
+    );
 
   const pphAmount =
-    useMemo(() => {
-      return calculatePphAmount(
+    useMemo(
+      () => {
+        return calculatePphAmount(
+          dppAmount,
+        );
+      },
+      [
         dppAmount,
-      );
-    }, [
-      dppAmount,
-    ]);
+      ],
+    );
 
   const totalAmount =
-    useMemo(() => {
-      return calculatePaymentTotal(
+    useMemo(
+      () => {
+        return calculatePaymentTotal(
+          dppAmount,
+          ppnAmount,
+          pphAmount,
+        );
+      },
+      [
         dppAmount,
         ppnAmount,
         pphAmount,
-      );
-    }, [
-      dppAmount,
-      ppnAmount,
-      pphAmount,
-    ]);
+      ],
+    );
 
   const isProcessing =
     createMutation.isPending ||
@@ -115,10 +207,16 @@ function CreatePaymentPage() {
   const handleInvoiceChange = (
     file: File | null,
   ) => {
-    setInvoiceFile(file);
+    setInvoiceFile(
+      file,
+    );
 
-    if (file) {
-      setInvoiceError('');
+    if (
+      file
+    ) {
+      setInvoiceError(
+        '',
+      );
     }
   };
 
@@ -163,7 +261,9 @@ function CreatePaymentPage() {
       },
       {
         onSuccess: () => {
-          navigate('/payment');
+          navigate(
+            '/payment',
+          );
         },
       },
     );
@@ -172,7 +272,9 @@ function CreatePaymentPage() {
   const handleSubmitPayment = (
     values: CreatePaymentFormValues,
   ) => {
-    if (!invoiceFile) {
+    if (
+      !invoiceFile
+    ) {
       setInvoiceError(
         'Invoice wajib diunggah',
       );
@@ -180,7 +282,9 @@ function CreatePaymentPage() {
       return;
     }
 
-    setInvoiceError('');
+    setInvoiceError(
+      '',
+    );
 
     createMutation.mutate(
       {
@@ -211,15 +315,25 @@ function CreatePaymentPage() {
       },
       {
         onSuccess: () => {
-          navigate('/payment');
+          navigate(
+            '/payment',
+          );
         },
       },
     );
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <header
+        className={
+          styles.pageHeader
+        }
+      >
         <h1>
           Buat Pengajuan Pembayaran
         </h1>
@@ -231,86 +345,146 @@ function CreatePaymentPage() {
       </header>
 
       <form
-        className={styles.formCard}
-        onSubmit={handleSubmit(
-          handleSubmitPayment,
-        )}
+        className={
+          styles.formCard
+        }
+        onSubmit={
+          handleSubmit(
+            handleSubmitPayment,
+          )
+        }
       >
         <section>
           <h2>
             Informasi Vendor & Invoice
           </h2>
 
-          <div className={styles.vendorGrid}>
-            <div className={styles.formGroup}>
-              <label htmlFor="vendorName">
+          <div
+            className={
+              styles.vendorGrid
+            }
+          >
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="vendorName"
+              >
                 Nama Vendor
+                <RequiredMark />
               </label>
 
               <input
                 id="vendorName"
                 type="text"
                 placeholder="Nama vendor"
-                disabled={isProcessing}
+                disabled={
+                  isProcessing
+                }
                 {...register(
                   'vendorName',
                 )}
               />
 
               {errors.vendorName && (
-                <span className={styles.errorText}>
-                  {errors.vendorName.message}
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
+                  {
+                    errors.vendorName.message
+                  }
                 </span>
               )}
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="invoiceNumber">
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="invoiceNumber"
+              >
                 No. Invoice
+                <RequiredMark />
               </label>
 
               <input
                 id="invoiceNumber"
                 type="text"
                 placeholder="Nomor invoice"
-                disabled={isProcessing}
+                disabled={
+                  isProcessing
+                }
                 {...register(
                   'invoiceNumber',
                 )}
               />
 
               {errors.invoiceNumber && (
-                <span className={styles.errorText}>
-                  {errors.invoiceNumber.message}
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
+                  {
+                    errors.invoiceNumber.message
+                  }
                 </span>
               )}
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="recipientName">
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="recipientName"
+              >
                 Nama Penerima
+                <RequiredMark />
               </label>
 
               <input
                 id="recipientName"
                 type="text"
                 placeholder="Nama penerima"
-                disabled={isProcessing}
+                disabled={
+                  isProcessing
+                }
                 {...register(
                   'recipientName',
                 )}
               />
 
               {errors.recipientName && (
-                <span className={styles.errorText}>
-                  {errors.recipientName.message}
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
+                  {
+                    errors.recipientName.message
+                  }
                 </span>
               )}
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="destinationAccountNumber">
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="destinationAccountNumber"
+              >
                 Nomor Rekening Tujuan
+                <RequiredMark />
               </label>
 
               <input
@@ -318,14 +492,20 @@ function CreatePaymentPage() {
                 type="text"
                 inputMode="numeric"
                 placeholder="Nomor rekening"
-                disabled={isProcessing}
+                disabled={
+                  isProcessing
+                }
                 {...register(
                   'destinationAccountNumber',
                 )}
               />
 
               {errors.destinationAccountNumber && (
-                <span className={styles.errorText}>
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
                   {
                     errors
                       .destinationAccountNumber
@@ -335,8 +515,14 @@ function CreatePaymentPage() {
               )}
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="taxInvoiceNumber">
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="taxInvoiceNumber"
+              >
                 No. Faktur Pajak
               </label>
 
@@ -344,69 +530,114 @@ function CreatePaymentPage() {
                 id="taxInvoiceNumber"
                 type="text"
                 placeholder="Nomor faktur pajak"
-                disabled={isProcessing}
+                disabled={
+                  isProcessing
+                }
                 {...register(
                   'taxInvoiceNumber',
                 )}
               />
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="invoiceDate">
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="invoiceDate"
+              >
                 Tanggal Invoice
+                <RequiredMark />
               </label>
 
               <input
                 id="invoiceDate"
                 type="date"
-                disabled={isProcessing}
+                disabled={
+                  isProcessing
+                }
                 {...register(
                   'invoiceDate',
                 )}
               />
 
               {errors.invoiceDate && (
-                <span className={styles.errorText}>
-                  {errors.invoiceDate.message}
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
+                  {
+                    errors.invoiceDate.message
+                  }
                 </span>
               )}
             </div>
           </div>
         </section>
 
-        <section className={styles.paymentSection}>
+        <section
+          className={
+            styles.paymentSection
+          }
+        >
           <h2>
             Perhitungan Pembayaran
           </h2>
 
-          <div className={styles.paymentGrid}>
-            <div className={styles.formGroup}>
-              <label htmlFor="dppAmount">
+          <div
+            className={
+              styles.paymentGrid
+            }
+          >
+            <div
+              className={
+                styles.formGroup
+              }
+            >
+              <label
+                htmlFor="dppAmount"
+              >
                 DPP
+                <RequiredMark />
               </label>
 
               <Controller
                 name="dppAmount"
-                control={control}
-                render={({ field }) => (
+                control={
+                  control
+                }
+                render={({
+                  field,
+                }) => (
                   <input
                     id="dppAmount"
                     type="text"
                     inputMode="numeric"
                     placeholder="Rp0"
-                    disabled={isProcessing}
+                    disabled={
+                      isProcessing
+                    }
                     value={
-                      field.value > 0
+                      field.value >
+                      0
                         ? formatRupiah(
                             field.value,
                           )
                         : ''
                     }
-                    onBlur={field.onBlur}
-                    onChange={(event) => {
+                    onBlur={
+                      field.onBlur
+                    }
+                    onChange={(
+                      event,
+                    ) => {
                       field.onChange(
                         parseRupiahInput(
-                          event.target.value,
+                          event
+                            .target
+                            .value,
                         ),
                       );
                     }}
@@ -415,144 +646,254 @@ function CreatePaymentPage() {
               />
 
               {errors.dppAmount && (
-                <span className={styles.errorText}>
-                  {errors.dppAmount.message}
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
+                  {
+                    errors.dppAmount.message
+                  }
                 </span>
               )}
             </div>
 
-            <div className={styles.formGroup}>
+            <div
+              className={
+                styles.formGroup
+              }
+            >
               <label>
                 PPN
               </label>
 
               <input
                 type="text"
-                value={formatRupiah(
-                  ppnAmount,
-                )}
+                value={
+                  formatRupiah(
+                    ppnAmount,
+                  )
+                }
                 readOnly
-                className={styles.readOnlyInput}
+                className={
+                  styles.readOnlyInput
+                }
               />
             </div>
 
-            <div className={styles.formGroup}>
+            <div
+              className={
+                styles.formGroup
+              }
+            >
               <label>
                 PPh
               </label>
 
               <input
                 type="text"
-                value={formatRupiah(
-                  pphAmount,
-                )}
+                value={
+                  formatRupiah(
+                    pphAmount,
+                  )
+                }
                 readOnly
-                className={styles.readOnlyInput}
+                className={
+                  styles.readOnlyInput
+                }
               />
             </div>
 
-            <div className={styles.formGroup}>
+            <div
+              className={
+                styles.formGroup
+              }
+            >
               <label>
                 Total Pembayaran
               </label>
 
               <input
                 type="text"
-                value={formatRupiah(
-                  totalAmount,
-                )}
+                value={
+                  formatRupiah(
+                    totalAmount,
+                  )
+                }
                 readOnly
-                className={styles.readOnlyInput}
+                className={
+                  styles.readOnlyInput
+                }
               />
             </div>
           </div>
 
-          <p className={styles.taxInformation}>
+          <p
+            className={
+              styles.taxInformation
+            }
+          >
             Nilai pajak dihitung otomatis sesuai
             konfigurasi Finance yang berlaku.
           </p>
         </section>
 
-        <section className={styles.documentSection}>
-          <div className={styles.documentGrid}>
-            <div className={styles.formGroup}>
+        <section
+          className={
+            styles.documentSection
+          }
+        >
+          <div
+            className={
+              styles.documentGrid
+            }
+          >
+            <div
+              className={
+                styles.formGroup
+              }
+            >
               <label>
-                Invoice (Wajib)
+                Invoice
+                <RequiredMark />
               </label>
 
-              <label className={styles.fileField}>
-                <span>
-                  {invoiceFile
-                    ? invoiceFile.name
-                    : 'Pilih dokumen'}
-                </span>
+              <label
+                className={
+                  styles.fileField
+                }
+              >
+                <FileLabelContent
+                  fileName={
+                    invoiceFile?.name
+                  }
+                />
 
                 <input
                   type="file"
                   accept=".pdf,.png,.jpg,.jpeg"
-                  disabled={isProcessing}
-                  onChange={(event) => {
+                  disabled={
+                    isProcessing
+                  }
+                  onChange={(
+                    event,
+                  ) => {
                     handleInvoiceChange(
-                      event.target.files?.[0] ??
-                      null,
+                      event.target
+                        .files?.[0] ??
+                        null,
                     );
                   }}
                 />
               </label>
 
               {invoiceError && (
-                <span className={styles.errorText}>
-                  {invoiceError}
+                <span
+                  className={
+                    styles.errorText
+                  }
+                >
+                  {
+                    invoiceError
+                  }
                 </span>
               )}
             </div>
 
-            <div className={styles.formGroup}>
+            <div
+              className={
+                styles.formGroup
+              }
+            >
               <label>
-                Quotation / PO (Opsional)
+                Quotation / PO
+                {' '}
+                <span
+                  style={{
+                    color:
+                      '#94a3b8',
+                    fontWeight:
+                      400,
+                  }}
+                >
+                  (Opsional)
+                </span>
               </label>
 
-              <label className={styles.fileField}>
-                <span>
-                  {quotationFile
-                    ? quotationFile.name
-                    : 'Pilih dokumen'}
-                </span>
+              <label
+                className={
+                  styles.fileField
+                }
+              >
+                <FileLabelContent
+                  fileName={
+                    quotationFile?.name
+                  }
+                />
 
                 <input
                   type="file"
                   accept=".pdf,.png,.jpg,.jpeg"
-                  disabled={isProcessing}
-                  onChange={(event) => {
+                  disabled={
+                    isProcessing
+                  }
+                  onChange={(
+                    event,
+                  ) => {
                     setQuotationFile(
-                      event.target.files?.[0] ??
-                      null,
+                      event.target
+                        .files?.[0] ??
+                        null,
                     );
                   }}
                 />
               </label>
             </div>
 
-            <div className={styles.formGroup}>
+            <div
+              className={
+                styles.formGroup
+              }
+            >
               <label>
                 Dokumen Lain
+                {' '}
+                <span
+                  style={{
+                    color:
+                      '#94a3b8',
+                    fontWeight:
+                      400,
+                  }}
+                >
+                  (Opsional)
+                </span>
               </label>
 
-              <label className={styles.fileField}>
-                <span>
-                  {otherDocumentFile
-                    ? otherDocumentFile.name
-                    : 'Pilih dokumen'}
-                </span>
+              <label
+                className={
+                  styles.fileField
+                }
+              >
+                <FileLabelContent
+                  fileName={
+                    otherDocumentFile?.name
+                  }
+                />
 
                 <input
                   type="file"
                   accept=".pdf,.png,.jpg,.jpeg"
-                  disabled={isProcessing}
-                  onChange={(event) => {
+                  disabled={
+                    isProcessing
+                  }
+                  onChange={(
+                    event,
+                  ) => {
                     setOtherDocumentFile(
-                      event.target.files?.[0] ??
-                      null,
+                      event.target
+                        .files?.[0] ??
+                        null,
                     );
                   }}
                 />
@@ -562,7 +903,11 @@ function CreatePaymentPage() {
         </section>
 
         {mutationError && (
-          <div className={styles.submitError}>
+          <div
+            className={
+              styles.submitError
+            }
+          >
             {getApiErrorMessage(
               mutationError,
               'Pengajuan pembayaran gagal diproses.',
@@ -570,12 +915,22 @@ function CreatePaymentPage() {
           </div>
         )}
 
-        <div className={styles.formActions}>
+        <div
+          className={
+            styles.formActions
+          }
+        >
           <button
             type="button"
-            className={styles.draftButton}
-            disabled={isProcessing}
-            onClick={handleSaveDraft}
+            className={
+              styles.draftButton
+            }
+            disabled={
+              isProcessing
+            }
+            onClick={
+              handleSaveDraft
+            }
           >
             {saveDraftMutation.isPending
               ? 'Menyimpan...'
@@ -584,8 +939,12 @@ function CreatePaymentPage() {
 
           <button
             type="submit"
-            className={styles.submitButton}
-            disabled={isProcessing}
+            className={
+              styles.submitButton
+            }
+            disabled={
+              isProcessing
+            }
           >
             {createMutation.isPending
               ? 'Mengirim...'

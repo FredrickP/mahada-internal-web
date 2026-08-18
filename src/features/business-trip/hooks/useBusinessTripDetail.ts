@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 
 import {
+  completeBusinessTrip,
   getBusinessTripDetail,
   uploadBusinessTripEvidence,
 } from '../api/business-trip.api';
@@ -55,6 +56,46 @@ export const useUploadBusinessTripEvidence =
             input.tripId,
           ],
         });
+      },
+    });
+  };
+
+export const useCompleteBusinessTrip =
+  () => {
+    const queryClient =
+      useQueryClient();
+
+    return useMutation({
+      mutationFn: (
+        id: string,
+      ) => {
+        return completeBusinessTrip(
+          id,
+        );
+      },
+      onSuccess: async (
+        _response,
+        id,
+      ) => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: [
+              'business-trip',
+              'detail',
+              id,
+            ],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [
+              'hr-services',
+            ],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [
+              'dashboard',
+            ],
+          }),
+        ]);
       },
     });
   };

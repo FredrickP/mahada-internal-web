@@ -17,6 +17,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  Upload,
   X,
 } from 'lucide-react';
 
@@ -43,21 +44,43 @@ import {
 
 import styles from './CreateITRequestPage.module.css';
 
+const RequiredMark = () => {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        marginLeft: '3px',
+        color: '#dc2626',
+        fontWeight: 700,
+      }}
+    >
+      *
+    </span>
+  );
+};
+
 function CreateITRequestPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const fileInputRef =
-    useRef<HTMLInputElement>(null);
+    useRef<HTMLInputElement>(
+      null,
+    );
 
   const [
     attachments,
     setAttachments,
-  ] = useState<File[]>([]);
+  ] = useState<File[]>(
+    [],
+  );
 
   const [
     isDragging,
     setIsDragging,
-  ] = useState(false);
+  ] = useState(
+    false,
+  );
 
   const {
     createMutation,
@@ -77,10 +100,10 @@ function CreateITRequestPage() {
       errors,
     },
   } = useForm<CreateITRequestFormValues>({
-    resolver: zodResolver(
-      createITRequestSchema,
-    ),
-
+    resolver:
+      zodResolver(
+        createITRequestSchema,
+      ),
     defaultValues: {
       title: '',
       description: '',
@@ -88,18 +111,28 @@ function CreateITRequestPage() {
   });
 
   const addFiles = (
-    files: FileList | File[],
+    files:
+      | FileList
+      | File[],
   ) => {
     const selectedFiles =
-      Array.from(files);
+      Array.from(
+        files,
+      );
 
     setAttachments(
-      (currentAttachments) => {
+      (
+        currentAttachments,
+      ) => {
         const newFiles =
           selectedFiles.filter(
-            (selectedFile) => {
+            (
+              selectedFile,
+            ) => {
               return !currentAttachments.some(
-                (currentFile) => {
+                (
+                  currentFile,
+                ) => {
                   return (
                     currentFile.name ===
                       selectedFile.name &&
@@ -120,9 +153,12 @@ function CreateITRequestPage() {
   };
 
   const handleFileChange = (
-    event: ChangeEvent<HTMLInputElement>,
+    event:
+      ChangeEvent<HTMLInputElement>,
   ) => {
-    if (!event.target.files) {
+    if (
+      !event.target.files
+    ) {
       return;
     }
 
@@ -130,34 +166,45 @@ function CreateITRequestPage() {
       event.target.files,
     );
 
-    event.target.value = '';
+    event.target.value =
+      '';
   };
 
   const handleDragOver = (
-    event: DragEvent<HTMLDivElement>,
+    event:
+      DragEvent<HTMLDivElement>,
   ) => {
     event.preventDefault();
 
-    setIsDragging(true);
+    setIsDragging(
+      true,
+    );
   };
 
   const handleDragLeave = (
-    event: DragEvent<HTMLDivElement>,
+    event:
+      DragEvent<HTMLDivElement>,
   ) => {
     event.preventDefault();
 
-    setIsDragging(false);
+    setIsDragging(
+      false,
+    );
   };
 
   const handleDrop = (
-    event: DragEvent<HTMLDivElement>,
+    event:
+      DragEvent<HTMLDivElement>,
   ) => {
     event.preventDefault();
 
-    setIsDragging(false);
+    setIsDragging(
+      false,
+    );
 
     if (
-      event.dataTransfer.files.length === 0
+      event.dataTransfer
+        .files.length === 0
     ) {
       return;
     }
@@ -171,10 +218,18 @@ function CreateITRequestPage() {
     index: number,
   ) => {
     setAttachments(
-      (currentAttachments) => {
+      (
+        currentAttachments,
+      ) => {
         return currentAttachments.filter(
-          (_, currentIndex) => {
-            return currentIndex !== index;
+          (
+            _,
+            currentIndex,
+          ) => {
+            return (
+              currentIndex !==
+              index
+            );
           },
         );
       },
@@ -182,12 +237,15 @@ function CreateITRequestPage() {
   };
 
   const handleSaveDraft = () => {
-    const values = getValues();
+    const values =
+      getValues();
 
     saveDraftMutation.mutate(
       {
-        type: values.type,
-        title: values.title,
+        type:
+          values.type,
+        title:
+          values.title,
         description:
           values.description,
         priority:
@@ -208,12 +266,15 @@ function CreateITRequestPage() {
   };
 
   const handleSendRequest = (
-    values: CreateITRequestFormValues,
+    values:
+      CreateITRequestFormValues,
   ) => {
     createMutation.mutate(
       {
-        type: values.type,
-        title: values.title,
+        type:
+          values.type,
+        title:
+          values.title,
         description:
           values.description,
         priority:
@@ -251,9 +312,21 @@ function CreateITRequestPage() {
     saveDraftMutation.isPending;
 
   return (
-    <div className={styles.page}>
-      <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>
+    <div
+      className={
+        styles.page
+      }
+    >
+      <div
+        className={
+          styles.pageHeader
+        }
+      >
+        <h1
+          className={
+            styles.pageTitle
+          }
+        >
           Buat IT Request
         </h1>
 
@@ -273,10 +346,14 @@ function CreateITRequestPage() {
         }
       >
         <form
-          className={styles.formCard}
-          onSubmit={handleSubmit(
-            handleSendRequest,
-          )}
+          className={
+            styles.formCard
+          }
+          onSubmit={
+            handleSubmit(
+              handleSendRequest,
+            )
+          }
           noValidate
         >
           <h2
@@ -304,6 +381,7 @@ function CreateITRequestPage() {
                 }
               >
                 Jenis Request
+                <RequiredMark />
               </label>
 
               <select
@@ -314,7 +392,9 @@ function CreateITRequestPage() {
                     : ''
                 }`}
                 defaultValue=""
-                {...register('type')}
+                {...register(
+                  'type',
+                )}
               >
                 <option
                   value=""
@@ -324,15 +404,21 @@ function CreateITRequestPage() {
                   Incident
                 </option>
 
-                <option value="REQUEST">
+                <option
+                  value="REQUEST"
+                >
                   Request
                 </option>
 
-                <option value="CHANGE">
+                <option
+                  value="CHANGE"
+                >
                   Change
                 </option>
 
-                <option value="INCIDENT">
+                <option
+                  value="INCIDENT"
+                >
                   Incident
                 </option>
               </select>
@@ -343,7 +429,9 @@ function CreateITRequestPage() {
                     styles.errorText
                   }
                 >
-                  {errors.type.message}
+                  {
+                    errors.type.message
+                  }
                 </p>
               )}
             </div>
@@ -381,9 +469,12 @@ function CreateITRequestPage() {
           >
             <label
               htmlFor="title"
-              className={styles.label}
+              className={
+                styles.label
+              }
             >
               Judul Request
+              <RequiredMark />
             </label>
 
             <input
@@ -395,7 +486,9 @@ function CreateITRequestPage() {
                   : ''
               }`}
               placeholder="Contoh: Tidak dapat mengakses VPN"
-              {...register('title')}
+              {...register(
+                'title',
+              )}
             />
 
             {errors.title && (
@@ -404,7 +497,9 @@ function CreateITRequestPage() {
                   styles.errorText
                 }
               >
-                {errors.title.message}
+                {
+                  errors.title.message
+                }
               </p>
             )}
           </div>
@@ -416,9 +511,12 @@ function CreateITRequestPage() {
           >
             <label
               htmlFor="description"
-              className={styles.label}
+              className={
+                styles.label
+              }
             >
               Deskripsi Masalah / Kebutuhan
+              <RequiredMark />
             </label>
 
             <textarea
@@ -466,6 +564,7 @@ function CreateITRequestPage() {
                 }
               >
                 Prioritas
+                <RequiredMark />
               </label>
 
               <select
@@ -487,15 +586,21 @@ function CreateITRequestPage() {
                   Pilih prioritas
                 </option>
 
-                <option value="LOW">
+                <option
+                  value="LOW"
+                >
                   Rendah
                 </option>
 
-                <option value="MEDIUM">
+                <option
+                  value="MEDIUM"
+                >
                   Sedang
                 </option>
 
-                <option value="HIGH">
+                <option
+                  value="HIGH"
+                >
                   Tinggi
                 </option>
               </select>
@@ -544,7 +649,9 @@ function CreateITRequestPage() {
             </div>
 
             <input
-              ref={fileInputRef}
+              ref={
+                fileInputRef
+              }
               type="file"
               multiple
               className={
@@ -566,11 +673,14 @@ function CreateITRequestPage() {
               onClick={() => {
                 fileInputRef.current?.click();
               }}
-              onKeyDown={(event) => {
+              onKeyDown={(
+                event,
+              ) => {
                 if (
                   event.key ===
                     'Enter' ||
-                  event.key === ' '
+                  event.key ===
+                    ' '
                 ) {
                   event.preventDefault();
 
@@ -583,13 +693,35 @@ function CreateITRequestPage() {
               onDragLeave={
                 handleDragLeave
               }
-              onDrop={handleDrop}
+              onDrop={
+                handleDrop
+              }
             >
-              Tarik file ke sini atau
-              pilih dari perangkat
+              <span
+                style={{
+                  display:
+                    'inline-flex',
+                  alignItems:
+                    'center',
+                  justifyContent:
+                    'center',
+                  gap:
+                    '8px',
+                }}
+              >
+                <Upload
+                  size={17}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
+
+                Tarik file ke sini atau
+                pilih dari perangkat
+              </span>
             </div>
 
-            {attachments.length > 0 && (
+            {attachments.length >
+              0 && (
               <div
                 className={
                   styles.attachmentList
@@ -650,9 +782,7 @@ function CreateITRequestPage() {
                       >
                         <X
                           size={16}
-                          strokeWidth={
-                            1.8
-                          }
+                          strokeWidth={1.8}
                         />
                       </button>
                     </div>
@@ -669,7 +799,9 @@ function CreateITRequestPage() {
               }
               role="alert"
             >
-              {requestError}
+              {
+                requestError
+              }
             </div>
           )}
 
@@ -683,7 +815,9 @@ function CreateITRequestPage() {
               className={
                 styles.draftButton
               }
-              disabled={isProcessing}
+              disabled={
+                isProcessing
+              }
               onClick={
                 handleSaveDraft
               }
@@ -698,7 +832,9 @@ function CreateITRequestPage() {
               className={
                 styles.submitButton
               }
-              disabled={isProcessing}
+              disabled={
+                isProcessing
+              }
             >
               {createMutation.isPending
                 ? 'Mengirim...'
@@ -726,14 +862,18 @@ function CreateITRequestPage() {
             }
           >
             <p>
-              <span>•</span>
+              <span>
+                •
+              </span>
 
               Incident tidak memerlukan
               approval.
             </p>
 
             <p>
-              <span>•</span>
+              <span>
+                •
+              </span>
 
               Request dan Change dikirim
               ke Head/Manager terlebih
@@ -741,7 +881,9 @@ function CreateITRequestPage() {
             </p>
 
             <p>
-              <span>•</span>
+              <span>
+                •
+              </span>
 
               Lampirkan screenshot untuk
               mempercepat pemeriksaan.
